@@ -1,0 +1,99 @@
+$xCols: 13;
+$yCols: 13;
+$squareSize: 50px;
+
+$xBrickSize: 12.5px;
+$yBrickSize: 12.5px;
+$brickGlueSize: 2px;
+
+$random7: random(7);
+
+$brickPalette: (#a35143, #ca6553, #dd745f, #65342f, #d55846, #8f3733, #ae4740);
+
+#game-canvas{
+  position: relative;
+  width: $xCols * $squareSize;
+  height: $yCols * $squareSize;
+  background: black;
+  margin: 20px auto;
+  #eagle{
+    position: absolute;
+    width: $squareSize;
+    height: $squareSize;
+    background: url('/img/eagle.png') no-repeat center;
+  }
+  #tank-player{
+    position: absolute;
+    width: $squareSize;
+    height: $squareSize;
+    background: url('/img/player-tank.png') no-repeat center;
+    background-size: contain;
+    &.rotating {
+      -moz-transition:0.1s all;
+      -webkit-transition:0.1s all;
+    }
+    &.up{
+      -webkit-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    &.down{
+      -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+    }
+    &.left{
+      -webkit-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+    }
+    &.right{
+      -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+    }
+  }
+  .obstacle{
+    position: absolute;
+    background: #ccc;
+    .horizontal{
+      width: $squareSize;
+    }
+    .vertical{
+      width: $squareSize/2;
+    }
+    // .left, .right, .bottom, .top, .full{
+    //   float: left;
+    // }
+    // .left{
+    //   width: 25px;
+    // }
+    // .right{
+    //   width: 25px;
+    //   float: right;
+    // }
+    // .bottom{
+    //   position: absolute;
+    //   bottom: 0;
+    // }
+  }
+  .brick{
+    float: left;
+    width: $xBrickSize;
+    height: $yBrickSize - $brickGlueSize;
+    background: nth($brickPalette, $random7);
+    margin-bottom: $brickGlueSize;
+    &.brick2{
+      margin-left: $brickGlueSize;
+      width: $xBrickSize - $brickGlueSize;
+    }
+  }
+  .metal{
+    float: left;
+    width: $xBrickSize * 2;
+    height: $yBrickSize * 2;
+    background: #ddd;
+    -webkit-box-shadow: inset 0 0 2px 4px #848484;
+    box-shadow: inset 0 0 2px 4px #848484;
+  }
+}

@@ -16,9 +16,9 @@ var historyApiFallback = require('connect-history-api-fallback');
 var isWatching = false;
 
 var paths = {
-  scripts: ['components/**/*.jsx'],
-  scss: 'stylesheets/**/*.scss',
-  images: 'images/**/*'
+  scripts: ['js/components/**/*.jsx', 'js/**/*.js'],
+  scss: 'assets/stylesheets/**/*.scss',
+  images: 'assets/images/**/*'
 };
 
 var settings = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
@@ -49,7 +49,7 @@ gulp.task('clean-css', function() {
 });
 
 gulp.task('scripts', ['clean-scripts'], function () {
-  return browserify({entries: 'components/app.jsx', extensions: ['.jsx'], debug: true})
+  return browserify({entries: 'js/components/app.jsx', extensions: ['.jsx'], debug: true})
     .transform('babelify', {
       presets: ['es2015', 'stage-1', 'react'],
       plugins: ['transform-decorators-legacy']
