@@ -2,16 +2,16 @@ import PlayerConstants from '../constants/PlayerConstants';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
 export default {
-  makeMove(keyCode) {
+  makeMove(key) {
     AppDispatcher.handleViewAction({
       actionType: PlayerConstants.MAKE_MOVE,
-      keyCode,
+      key,
     });
   },
-  shoot(promotion) {
+  shoot(key) {
     AppDispatcher.handleViewAction({
       actionType: PlayerConstants.SHOOT,
-      promotion
+      key
     });
   },
   rematch() {

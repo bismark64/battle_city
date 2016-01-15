@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
-import Obstacle from './obstacles/obstacle';
-import Eagle from './eagle';
+import Eagle from './Eagle';
+import Obstacle from './obstacles/Obstacle';
 import Player from './tanks/Player';
+import Bullet from './Bullet';
+import Explosion from './Explosion';
 
 export default class Field extends Component {
   render(){
-    const { bricks, metals } = this.props;
+    const { bricks, metals, bullets, explosions } = this.props;
 
     return(
       <section id="game-canvas">
@@ -19,6 +21,18 @@ export default class Field extends Component {
         {metals.map((obstacle, index) => {
           return(
             <Obstacle xPos={obstacle[0]} yPos={obstacle[1]} orientation={obstacle[2]} type="metal" key={index} />
+          );
+        })}
+
+        {bullets.map((bullet, index) => {
+          return(
+            <Bullet id={bullet.id} x={bullet.x} y={bullet.y} orientation={bullet.orientation} key={index} />
+          );
+        })}
+
+        {explosions.map((exp, index) => {
+          return(
+            <Explosion id={exp.id} x={exp.x} y={exp.y} key={index} />
           );
         })}
 

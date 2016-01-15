@@ -4,33 +4,23 @@ import _ from 'lodash';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import GameConstants from '../constants/GameConstants';
-import GameObstacleRects from '../utils/GameObstacleRects';
+
+import GameDataStore from '../utils/GameDataStore';
+import GameDynamics from '../utils/GameDynamics';
 
 const CHANGE_EVENT = 'change';
 
-let _obstacles = {};
-let _obstaclePointsMap = [];
-
-const storeObstacles = (obstacles) => {
-  _obstacles = obstacles;
-  return true;
-};
-
-const storeObstaclePoints = (obstaclesPoints) =>{
-  _obstaclePointsMap.push(obstaclesPoints);
-  return true;
-};
+const dataStore = new GameDataStore();
+const gd = new GameDynamics();
 
 const GameStore = Object.assign({}, EventEmitter.prototype, {
   getState(){
     return {
-      obs: _obstacles,
-      obstaclePointsMap: _.flatten(_obstaclePointsMap)
+      obs: dataStore.getObstacles(),
+      obstaclePointsMap: dataStore.getObstaclePoints(),
+      bullets: dataStore.getBullets(),
+      explosions: dataStore.getExplosions()
     };
-  },
-
-  getGameCollisionObstacles(){
-    return GameObstacleRects.getRects();
   },
 
   addChangeListener(callback) {
@@ -49,11 +39,23 @@ GameStore.dispatcherToken = AppDispatcher.register(payload => {
 
   switch (action.actionType) {
     case GameConstants.LOAD_MAP:
-      emitEvent = storeObstacles(action.mapData);
+      emitEvent = dataStore.storeObstacles(action.mapData);
       break;
 
     case GameConstants.OBSTACLE_POINTS:
-      emitEvent = storeObstaclePoints(action.points);
+      emitEvent = dataStore.storeObstaclePoints(action.points);
+      break;
+
+    case GameConstants.SHOOT:
+      emitEvent = dataStore.createBullet(action.initialData);
+      break;
+
+    case GameConstants.BULLET_UPDATE:
+      emitEvent = dataStore.moveBullet(action.bulletId);
+      break;
+
+    case GameConstants.EXPLOSION:
+      emitEvent = dataStore.removeExplosion(action.explosion);
       break;
 
     default:

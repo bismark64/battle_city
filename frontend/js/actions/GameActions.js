@@ -16,5 +16,23 @@ export default {
       actionType: GameConstants.OBSTACLE_POINTS,
       points,
     });
+  },
+  shoot(initialData){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.SHOOT,
+      initialData,
+    });
+  },
+  moveBullet(bulletId){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.BULLET_UPDATE,
+      bulletId,
+    });
+  },
+  removeExplosion(explosion){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.EXPLOSION,
+      explosion,
+    });
   }
 };

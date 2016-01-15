@@ -4,12 +4,14 @@ import _ from 'lodash';
 import GameStore from '../stores/GameStore';
 
 const KEY = {
-  enter: 13,
-  left: 37,
-  up: 38,
-  right: 39,
-  down: 40,
+  controls:{
+    left: 37,
+    up: 38,
+    right: 39,
+    down: 40,
+  },
   shoot: 32,
+  enter: 13,
   escape: 27
 };
 
@@ -26,11 +28,13 @@ const OPERATORS = {
 };
 
 // Get name from KEY object given key code
-const getKeyName = (keyCode) => _.findKey(KEY, (value) => value === keyCode );
+const getKeyName = (key, scope=null) => {
+  return (scope === null) ? _.findKey(KEY, (value) => value === key ) : _.findKey(KEY[scope], (value) => value === key );
+}
 
 // Calculate projected position given position and key code
-const calculateNewPosition = (currentPosition, keyCode, speed) => {
-  let op = KEY_TO_OPERATORS[getKeyName(keyCode)];
+const calculateNewPosition = (currentPosition, key, speed) => {
+  let op = KEY_TO_OPERATORS[getKeyName(key, 'controls')];
   return OPERATORS[op](currentPosition, speed);
 }
 
@@ -53,8 +57,8 @@ export default class PlayerDynamics{
     this.position = Immutable.fromJS(this.initialPosition);
     this.orientation = 'up';
     this.allowedControlKeys =  {
-      x: [KEY.left, KEY.right],
-      y: [KEY.down, KEY.up]
+      x: [KEY.controls.left, KEY.controls.right],
+      y: [KEY.controls.down, KEY.controls.up]
     };
 
     let mapMax = 650 - this.size[0] + this.speed;
@@ -70,6 +74,8 @@ export default class PlayerDynamics{
   // Detect collision with projected position and previously stored obstacles
   collision(x,y){
     let obstacles = loadObstacles();
+    let _this = this;
+    let c = false;
 
     if(obstacles === null){
       alert('Error loading Obstacles! Please reload this page.');
@@ -77,9 +83,6 @@ export default class PlayerDynamics{
     }
 
     if (!this.checkWithinCanvas(x,y)) { return true };
-
-    let _this = this;
-    let c = false;
 
     _.forEach(obstacles, (obstacleCoordinates) => {
       let rect1 = {x: x, y: y, width: _this.size[0], height: _this.size[1]};
@@ -97,37 +100,34 @@ export default class PlayerDynamics{
   }
 
   // Validate key pressed
-  validKey(key, axis=null){
+  shouldKeyUpdateAxis(key, axis=null){
     let validKeys = (axis === null) ? _.values(this.allowedControlKeys) : this.allowedControlKeys[axis];
     return _.includes(validKeys, key);
   }
 
   // Update Player position
-  updatePosition(keyCode){
+  updatePosition(key){
     let currentX = this.position.first();
     let currentY = this.position.last();
 
-    let newX = calculateNewPosition(currentX, keyCode, this.speed);
-    let newY = calculateNewPosition(currentY, keyCode, this.speed);
+    let newX = calculateNewPosition(currentX, key, this.speed);
+    let newY = calculateNewPosition(currentY, key, this.speed);
 
-    if (this.validKey(keyCode, 'x') && !this.collision(newX, currentY) ) {
+    if (this.shouldKeyUpdateAxis(key, 'x') && !this.collision(newX, currentY) ) {
       this.position = this.position.update(0, () => newX );
     }
-    if (this.validKey(keyCode, 'y') && !this.collision(currentX, newY) ) {
+    if (this.shouldKeyUpdateAxis(key, 'y') && !this.collision(currentX, newY) ) {
       this.position = this.position.update(1, () => newY );
     }
   }
 
-  updateOrientation(keyCode){
-    this.orientation = getKeyName(keyCode);
+  updateOrientation(key){
+    this.orientation = getKeyName(key, 'controls');
   }
 
-  makeMove(action){
-    let keyCode = action.keyCode;
-
-    this.updatePosition(keyCode);
-    this.updateOrientation(keyCode);
-    
+  makeMove(key){
+    this.updatePosition(key);
+    this.updateOrientation(key);
     return true
   }
 

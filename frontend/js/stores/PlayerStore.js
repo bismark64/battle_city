@@ -37,15 +37,13 @@ AppDispatcher.register(payload => {
 
   switch (action.actionType) {
     case PlayerConstants.MAKE_MOVE:
-      AppDispatcher.waitFor([
-        GameStore.dispatcherToken
-      ]);
-
-      emitEvent = pd.makeMove(action);
+      AppDispatcher.waitFor([GameStore.dispatcherToken]);
+      
+      emitEvent = pd.makeMove(action.key);
       break;
 
     case PlayerConstants.SHOOT:
-      //_promotion = action.promotion;
+      emitEvent = pd.shoot(action.key);
       break;
 
     case PlayerConstants.GAME_OVER:

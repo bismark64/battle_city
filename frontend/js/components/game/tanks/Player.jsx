@@ -1,20 +1,47 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+
 import BaseComponent from '../../BaseComponent';
 import PlayerActions from '../../../actions/PlayerActions';
+import GameActions from '../../../actions/GameActions';
 import PlayerStore from '../../../stores/PlayerStore';
-
-const getPlayerState = () => PlayerStore.getState();
 
 export default class Player extends BaseComponent {
   constructor(props){
     super(props);
 
-    this.state = getPlayerState();
-    this._bind('_onChange');
+    this.state = PlayerStore.getState();
+    this._bind('_onChange', 'onKeyDown');
+
+    this.KEY = {
+      controls:{
+        left: 37,
+        up: 38,
+        right: 39,
+        down: 40,
+      },
+      shoot: 32,
+      enter: 13,
+      escape: 27
+    };
+  }
+
+  _isShootKey(key){
+    return key === this.KEY.shoot;
+  }
+
+  _isControlKey(key){
+    return _.includes(_.values(this.KEY.controls), key);
   }
 
   onKeyDown(e){
-    PlayerActions.makeMove(e.which);
+    let key = e.which;
+
+    if (this._isShootKey(key)) {
+      GameActions.shoot(this.state);
+    }else if(this._isControlKey(key)){
+      PlayerActions.makeMove(key);
+    }
   }
 
   componentDidMount(){
@@ -28,7 +55,7 @@ export default class Player extends BaseComponent {
   }
 
   _onChange(){
-    this.setState(getPlayerState());
+    this.setState(PlayerStore.getState());
   };
 
   render(){

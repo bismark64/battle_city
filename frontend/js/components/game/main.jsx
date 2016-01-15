@@ -5,7 +5,7 @@ import BaseComponent from '../BaseComponent';
 import GameActions from '../../actions/GameActions';
 import GameStore from '../../stores/GameStore';
 
-import Field from './field';
+import Field from './Field';
 
 export default class Main extends BaseComponent {
   constructor(props){
@@ -14,8 +14,10 @@ export default class Main extends BaseComponent {
     this.state = {
       obs: {
         bricks: [],
-        metals: []
-      }
+        metals: [],
+      },
+      bullets: [],
+      explosions: []
     };
 
     this._bind('_onChange');
@@ -31,13 +33,13 @@ export default class Main extends BaseComponent {
   };
 
   render(){
-    const { obs } = this.state;
+    const { obs, bullets, explosions } = this.state;
 
     return(
       <Grid>
         <Row>
           <Col xs={9} md={9}>
-            <Field bricks={obs.bricks} metals={obs.metals} />
+            <Field bricks={obs.bricks} metals={obs.metals} bullets={bullets} explosions={explosions} />
           </Col>
           <Col xs={3} md={3}>
             <h1>Aca estoy!</h1>
