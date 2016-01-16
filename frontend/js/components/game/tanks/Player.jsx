@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import BaseComponent from '../../BaseComponent';
-import PlayerActions from '../../../actions/PlayerActions';
 import GameActions from '../../../actions/GameActions';
-import PlayerStore from '../../../stores/PlayerStore';
+//import PlayerActions from '../../../actions/PlayerActions';
+//import PlayerStore from '../../../stores/PlayerStore';
 
 export default class Player extends BaseComponent {
   constructor(props){
     super(props);
 
-    this.state = PlayerStore.getState();
-    this._bind('_onChange', 'onKeyDown');
+    //this.state = PlayerStore.getState();
+    this._bind('_onKeyDown');
 
     this.KEY = {
       controls:{
@@ -34,32 +34,32 @@ export default class Player extends BaseComponent {
     return _.includes(_.values(this.KEY.controls), key);
   }
 
-  onKeyDown(e){
+  _onKeyDown(e){
     let key = e.which;
 
     if (this._isShootKey(key)) {
-      GameActions.shoot(this.state);
+      GameActions.shoot(this.props.data);
     }else if(this._isControlKey(key)){
-      PlayerActions.makeMove(key);
+      GameActions.playerMove(key);
     }
   }
 
   componentDidMount(){
-    document.addEventListener('keydown', this.onKeyDown);
-    PlayerStore.addChangeListener(this._onChange);
+    document.addEventListener('keydown', this._onKeyDown);
+    //PlayerStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount(){
-    document.removeEventListener('keydown', this.onKeyDown);
-    PlayerStore.removeChangeListener(this._onChange);
+    document.removeEventListener('keydown', this._onKeyDown);
+    //PlayerStore.removeChangeListener(this._onChange);
   }
 
-  _onChange(){
-    this.setState(PlayerStore.getState());
-  };
+  // _onChange(){
+  //   this.setState(PlayerStore.getState());
+  // };
 
   render(){
-    const { x, y, orientation } = this.state;
+    const { x, y, orientation } = this.props.data;
 
     return <div id="tank-player" className={`rotating ${orientation}`} style={{top: y, left: x}}></div>;
   }

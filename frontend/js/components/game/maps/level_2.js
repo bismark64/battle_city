@@ -1,21 +1,21 @@
 export default{
   bricks: [
     //Columns
-    [50, 50, 'horizontal'],
-    [50, 75, 'horizontal'],
-    [50, 100, "horizontal"],
-    [50, 125, "horizontal"],
-    [50, 150, "horizontal"],
-    [50, 175, "horizontal"],
-    [50, 200, "horizontal"],
-    [50, 225, "horizontal"],
-    [50, 400, "horizontal"],
-    [50, 425, "horizontal"],
-    [50, 450, "horizontal"],
-    [50, 475, "horizontal"],
-    [50, 500, "horizontal"],
-    [50, 525, "horizontal"],
-    [50, 550, "horizontal"],
+    {type: "brick", x: 50, y: 50,  orientation: "horizontal"},
+    {type: "brick", x: 50, y: 75,  orientation: "horizontal"},
+    {type: "brick", x: 50, y: 100, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 125, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 150, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 175, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 200, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 225, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 400, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 425, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 450, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 475, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 500, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 525, orientation:  "horizontal"},
+    {type: "brick", x: 50, y: 550, orientation:  "horizontal"},
 
     // [150, 50, 'horizontal'],
     // [150, 100, "horizontal"],
@@ -80,9 +80,9 @@ export default{
 
   ],
   metals: [
-    [0, 300, 'horizontal'],
-    [600, 300, 'horizontal'],
-    [300, 150, 'horizontal'],
-    [300, 175, 'horizontal']
+    {type: "metal", x: 0,   y: 300, orientation: 'horizontal'},
+    {type: "metal", x: 600, y: 300, orientation: 'horizontal'},
+    {type: "metal", x: 300, y: 150, orientation: 'horizontal'},
+    {type: "metal", x: 300, y: 175, orientation: 'horizontal'}
   ]
 }

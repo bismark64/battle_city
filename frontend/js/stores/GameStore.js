@@ -6,18 +6,15 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import GameConstants from '../constants/GameConstants';
 
 import GameDataStore from '../utils/GameDataStore';
-import GameDynamics from '../utils/GameDynamics';
 
 const CHANGE_EVENT = 'change';
-
 const dataStore = new GameDataStore();
-const gd = new GameDynamics();
 
 const GameStore = Object.assign({}, EventEmitter.prototype, {
   getState(){
     return {
-      obs: dataStore.getObstacles(),
-      obstaclePointsMap: dataStore.getObstaclePoints(),
+      player: dataStore.getPlayerState(),
+      obstacles: dataStore.getObstacles(),
       bullets: dataStore.getBullets(),
       explosions: dataStore.getExplosions()
     };
@@ -42,8 +39,8 @@ GameStore.dispatcherToken = AppDispatcher.register(payload => {
       emitEvent = dataStore.storeObstacles(action.mapData);
       break;
 
-    case GameConstants.OBSTACLE_POINTS:
-      emitEvent = dataStore.storeObstaclePoints(action.points);
+    case GameConstants.PLAYER_MOVE:
+      emitEvent = dataStore.playerMove(action.key);
       break;
 
     case GameConstants.SHOOT:

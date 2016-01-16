@@ -8,19 +8,19 @@ import Explosion from './Explosion';
 
 export default class Field extends Component {
   render(){
-    const { bricks, metals, bullets, explosions } = this.props;
+    const { player, bricks, metals, bullets, explosions } = this.props;
 
     return(
       <section id="game-canvas">
         {bricks.map((obstacle, index) => {
           return(
-            <Obstacle xPos={obstacle[0]} yPos={obstacle[1]} orientation={obstacle[2]} type="brick" key={index} />
+            <Obstacle x={obstacle.x} y={obstacle.y} orientation={obstacle.orientation} type={obstacle.type} bricks={obstacle.bricks} key={index} />
           );
         })}
 
         {metals.map((obstacle, index) => {
           return(
-            <Obstacle xPos={obstacle[0]} yPos={obstacle[1]} orientation={obstacle[2]} type="metal" key={index} />
+            <Obstacle x={obstacle.x} y={obstacle.y} orientation={obstacle.orientation} type={obstacle.type} bricks={obstacle.bricks} key={index} />
           );
         })}
 
@@ -36,9 +36,9 @@ export default class Field extends Component {
           );
         })}
 
-        <Player />
+        <Player data={player} />
 
-        <Eagle xPos="300" yPos="600" />
+        <Eagle x="300" y="600" />
       </section>
     );
   }

@@ -1,35 +1,24 @@
 import React, { Component, PropTypes } from 'react';
-import Constructor from './Constructor';
+import Brick from './Brick';
 
 export default class Obstacle extends Component {
-  constructor(props){
-    super(props);
-
-    this.state = {obstacles: ''};
-  }
-
   static propTypes = {
     type: PropTypes.string.isRequired,
     orientation: PropTypes.string.isRequired
   };
 
-  componentDidMount(){
-    let obstacles = this.getObstacles()
-    this.setState({obstacles: obstacles});
-  }
-
-  getObstacles(){
-    const { orientation, type, xPos, yPos } = this.props;
-    return new Constructor(type, orientation, [xPos, yPos]).build();
-  }
-
   render(){
-    const { xPos, yPos } = this.props;
-    const { obstacles } = this.state;
+    const { x, y, bricks, orientation, type } = this.props;
 
     return(
-      <div className="obstacle" style={{ top: yPos, left: xPos }}>
-        {obstacles}
+      <div className="obstacle" style={{ top: y, left: x }}>
+        <div className={orientation}>
+          {bricks.map((brick, index) => {
+            return(
+              <Brick id={brick.relativeId} x={brick.x} y={brick.y} type={type} obstacleOrientation={orientation} key={index} />
+            );
+          })}
+        </div>
       </div>
     );
   }

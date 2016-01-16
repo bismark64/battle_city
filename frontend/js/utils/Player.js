@@ -1,8 +1,6 @@
 import Immutable, {List, Range} from 'immutable';
 import _ from 'lodash';
 
-import GameStore from '../stores/GameStore';
-
 const KEY = {
   controls:{
     left: 37,
@@ -38,18 +36,8 @@ const calculateNewPosition = (currentPosition, key, speed) => {
   return OPERATORS[op](currentPosition, speed);
 }
 
-// Internal store for obstacles
-let _obstacles = null;
-
-const storeObstacles = () => {
-  _obstacles = GameStore.getState().obstaclePointsMap;
-}
-const loadObstacles = () => {
-  return _obstacles;
-}
-
 // Main class 
-export default class PlayerDynamics{
+export default class Player {
   constructor(options={}){
     this.size = options.size || [50,50];
     this.speed = options.speed || 10;
@@ -64,29 +52,31 @@ export default class PlayerDynamics{
     let mapMax = 650 - this.size[0] + this.speed;
     this.mapSize = options.mapSize || Range(0, mapMax);
 
-    GameStore.addChangeListener(storeObstacles);
+    this.obstacles = null;
   }
 
-  checkWithinCanvas(x,y){
+  storeObstacles(obstacles){
+    this.obstacles = obstacles;
+  }
+
+  withinField(x,y){
     return x >= this.mapSize.first() && x <= this.mapSize.last() && y >= this.mapSize.first() && y <= this.mapSize.last();
   }
 
   // Detect collision with projected position and previously stored obstacles
   collision(x,y){
-    let obstacles = loadObstacles();
-    let _this = this;
     let c = false;
 
-    if(obstacles === null){
-      alert('Error loading Obstacles! Please reload this page.');
+    if(this.obstacles === null){
+      alert('Error: Obstacles not loaded.');
       return true;
     }
 
-    if (!this.checkWithinCanvas(x,y)) { return true };
+    if (!this.withinField(x,y)) { return true };
 
-    _.forEach(obstacles, (obstacleCoordinates) => {
-      let rect1 = {x: x, y: y, width: _this.size[0], height: _this.size[1]};
-      let rect2 = {x: obstacleCoordinates[0], y: obstacleCoordinates[1], width: obstacleCoordinates[2], height: obstacleCoordinates[2] };
+    _.forEach(this.obstacles, (obstacle) => {
+      let rect1 = {x: x, y: y, width: this.size[0], height: this.size[1]};
+      let rect2 = {x: obstacle.x, y: obstacle.y, width: obstacle.size, height: obstacle.size };
 
       let collided = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
 
@@ -125,18 +115,19 @@ export default class PlayerDynamics{
     this.orientation = getKeyName(key, 'controls');
   }
 
-  makeMove(key){
+  move(key){
     this.updatePosition(key);
     this.updateOrientation(key);
     return true
   }
 
   // Getters
-  getPosition(){
-    return this.position;
-  } 
-  getOrientation(){
-    return this.orientation;
-  } 
+  get(){
+    return {
+      x: this.position.first(),
+      y: this.position.last(),
+      orientation: this.orientation
+    };
+  }
 }
 

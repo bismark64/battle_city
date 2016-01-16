@@ -11,10 +11,10 @@ export default {
       mapData,
     });
   },
-  addObstaclePoints(points) {
+  playerMove(key) {
     AppDispatcher.handleViewAction({
-      actionType: GameConstants.OBSTACLE_POINTS,
-      points,
+      actionType: GameConstants.PLAYER_MOVE,
+      key,
     });
   },
   shoot(initialData){

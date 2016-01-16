@@ -12,7 +12,8 @@ export default class Main extends BaseComponent {
     super(props);
 
     this.state = {
-      obs: {
+      player: {},
+      obstacles: {
         bricks: [],
         metals: [],
       },
@@ -33,13 +34,13 @@ export default class Main extends BaseComponent {
   };
 
   render(){
-    const { obs, bullets, explosions } = this.state;
+    const { player, obstacles, bullets, explosions } = this.state;
 
     return(
       <Grid>
         <Row>
           <Col xs={9} md={9}>
-            <Field bricks={obs.bricks} metals={obs.metals} bullets={bullets} explosions={explosions} />
+            <Field player={player} bricks={obstacles.bricks} metals={obstacles.metals} bullets={bullets} explosions={explosions} />
           </Col>
           <Col xs={3} md={3}>
             <h1>Aca estoy!</h1>

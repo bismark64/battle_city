@@ -13,7 +13,7 @@ export default class Explosion extends BaseComponent {
   }
 
   componentDidMount(){
-    this.interval = setInterval(this.destroy, 300);
+    this.interval = setInterval(this.destroy, 400);
   }
 
   componentWillUnmount(){

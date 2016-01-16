@@ -15,17 +15,11 @@ export default class Bullet extends BaseComponent {
 
   componentDidMount(){
     this.interval = setInterval(this.move, 5);
-    //GameStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount(){
     clearInterval(this.interval);
-    //GameStore.removeChangeListener(this._onChange);
   }
-
-  // _onChange(){
-  //   this.setState(GameStore.getBulletUpdate());
-  // };
 
   render(){
     const { x, y, orientation } = this.props;
