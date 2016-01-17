@@ -3,8 +3,10 @@ import _ from 'lodash';
 export default class Explosion {
   constructor(options={}){
     this.explosions = [];
-    this.bulletOffset = 10;
-    this.impactOffset = 15;
+    this.bulletSize = 50;
+    this.bulletSpeed = 20;
+    this.bulletOffset = 12.5;
+    this.impactOffset = this.bulletSize - this.bulletSpeed;
   }
 
   create(bullet){
@@ -13,11 +15,11 @@ export default class Explosion {
     let index = this.explosions.length + 1;
 
     if (bullet.orientation == 'left' || bullet.orientation == 'right') {
-      y = bullet.y - this.bulletOffset;
-      //x = (bullet.orientation == 'left') ? (bullet.x - this.impactOffset) : (bullet.x);
+      y = bullet.y + this.bulletOffset;
+      if (bullet.orientation == 'right') x = bullet.x + this.impactOffset;
     } else{
-      x = bullet.x - this.bulletOffset;
-      //y = (bullet.orientation == 'up') ? (bullet.y - this.impactOffset) : (bullet.y + this.impactOffset);
+      x = bullet.x + this.bulletOffset;
+      if (bullet.orientation == 'down') y = bullet.y + this.impactOffset;
     };
 
     this.explosions.push({id: index, x: x, y: y});

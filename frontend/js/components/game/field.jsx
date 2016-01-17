@@ -8,10 +8,15 @@ import Explosion from './Explosion';
 
 export default class Field extends Component {
   render(){
-    const { player, bricks, metals, bullets, explosions } = this.props;
+    const { playing, player, bricks, metals, bullets, explosions } = this.props;
+    const playingClass = playing ? 'playing' : 'stopped';
 
     return(
       <section id="game-canvas">
+        <div id="start-overlay" className={playingClass}>
+          <h3>Press Enter to Start!</h3>
+        </div>
+
         {bricks.map((obstacle, index) => {
           return(
             <Obstacle x={obstacle.x} y={obstacle.y} orientation={obstacle.orientation} type={obstacle.type} bricks={obstacle.bricks} key={index} />
@@ -36,9 +41,10 @@ export default class Field extends Component {
           );
         })}
 
-        <Player data={player} />
+        <Player data={player} playing={playing} />
 
         <Eagle x="300" y="600" />
+
       </section>
     );
   }

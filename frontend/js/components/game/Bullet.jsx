@@ -24,6 +24,10 @@ export default class Bullet extends BaseComponent {
   render(){
     const { x, y, orientation } = this.props;
 
-    return <div className={`bullet ${orientation}`} style={{top: y, left: x}}></div>;
+    return(
+      <div className='bullet-container' style={{top: y, left: x}}>
+        <span className={`bullet ${orientation}`}></span>
+      </div>
+    );
   }
 }

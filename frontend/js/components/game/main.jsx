@@ -6,20 +6,13 @@ import GameActions from '../../actions/GameActions';
 import GameStore from '../../stores/GameStore';
 
 import Field from './Field';
+import Button from '../page/Button';
 
 export default class Main extends BaseComponent {
   constructor(props){
     super(props);
 
-    this.state = {
-      player: {},
-      obstacles: {
-        bricks: [],
-        metals: [],
-      },
-      bullets: [],
-      explosions: []
-    };
+    this.state = GameStore.initialState();
 
     this._bind('_onChange');
   }
@@ -34,16 +27,24 @@ export default class Main extends BaseComponent {
   };
 
   render(){
-    const { player, obstacles, bullets, explosions } = this.state;
+    const { playing, score, level, lives, player, obstacles, bullets, explosions } = this.state;
 
     return(
       <Grid>
         <Row>
           <Col xs={9} md={9}>
-            <Field player={player} bricks={obstacles.bricks} metals={obstacles.metals} bullets={bullets} explosions={explosions} />
+            <Field
+              playing={playing}
+              player={player} 
+              bricks={obstacles.bricks} 
+              metals={obstacles.metals} 
+              bullets={bullets} 
+              explosions={explosions} />
           </Col>
           <Col xs={3} md={3}>
-            <h1>Aca estoy!</h1>
+            <h1>Level {level}</h1>
+            <h3>Score: {score}</h3>
+            <h3>Lives: {lives}</h3>
           </Col>
         </Row>
       </Grid>

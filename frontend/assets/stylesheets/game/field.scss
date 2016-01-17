@@ -10,7 +10,19 @@ $random7: random(7);
 
 $brickPalette: (#a35143, #ca6553, #dd745f, #65342f, #d55846, #8f3733, #ae4740);
 
+$bulletContainerSize: 50px;
 $bulletSize: 5px;
+
+@-webkit-keyframes pulse_animation {
+  0% { -webkit-transform: scale(1); }
+  30% { -webkit-transform: scale(1); }
+  40% { -webkit-transform: scale(1.05); }
+  50% { -webkit-transform: scale(1); }
+  60% { -webkit-transform: scale(1); }
+  70% { -webkit-transform: scale(1.02); }
+  80% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
+}
 
 #game-canvas{
   position: relative;
@@ -18,6 +30,33 @@ $bulletSize: 5px;
   height: $yCols * $squareSize;
   background: black;
   margin: 20px auto;
+  #start-overlay{
+    width: 650px;
+    height: 650px;
+    h3{
+      color: white;
+      padding-top: 50%;
+      text-align: center;
+      text-shadow: 0px 0px 5px black;
+      text-transform: uppercase;
+    }
+    &.stopped{
+      background: rgba(255,255,255,0.2);
+      h3{
+        display: block;
+        -webkit-animation-name: 'pulse_animation';
+        -webkit-animation-duration: 5000ms;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+      }
+    }
+    &.playing{
+      background: none;
+      h3{
+        display: none;
+      }
+    }
+  }
   #eagle{
     position: absolute;
     width: $squareSize;
@@ -63,40 +102,49 @@ $bulletSize: 5px;
       -moz-transform: rotate(90deg);
     }
   }
-  .obstacle{
-    position: absolute;
-    background: #ccc;
-    .horizontal{
-      width: $squareSize;
-    }
-    .vertical{
-      width: $squareSize/2;
-    }
-  }
   .brick{
-    float: left;
+    position: absolute;
     width: $xBrickSize;
-    height: $yBrickSize - $brickGlueSize;
+    height: $yBrickSize;
     background: nth($brickPalette, $random7);
-    margin-bottom: $brickGlueSize;
+    border-bottom: 2px solid #ccc; 
     &.brick2{
-      margin-left: $brickGlueSize;
-      width: $xBrickSize - $brickGlueSize;
+      border-left: 2px solid #ccc;
     }
   }
   .metal{
-    float: left;
+    position: absolute;
     width: $xBrickSize * 2;
     height: $yBrickSize * 2;
     background: #ddd;
     -webkit-box-shadow: inset 0 0 2px 4px #848484;
     box-shadow: inset 0 0 2px 4px #848484;
   }
-  .bullet{
+  .bullet-container{
     position: absolute;
-    background: red;
-    width: $bulletSize;
-    height: $bulletSize;
+    width: $bulletContainerSize;
+    height: $bulletContainerSize;
+    //background: yellow;
+    .bullet{
+      background: red;
+      float: left;
+      width: $bulletSize;
+      height: $bulletSize;
+      &.up{
+        margin-left: ($bulletContainerSize/2) - ($bulletSize/2);
+      }
+      &.left{
+        margin-top: ($bulletContainerSize/2) - ($bulletSize/2);
+      }
+      &.right{
+        margin-left: $bulletContainerSize - $bulletSize;
+        margin-top: ($bulletContainerSize/2) - ($bulletSize/2);
+      }
+      &.down{
+        margin-top: $bulletContainerSize - $bulletSize;
+        margin-left: ($bulletContainerSize/2) - ($bulletSize/2);
+      }
+    }
   }
   .explosion{
     position: absolute;

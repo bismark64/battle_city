@@ -11,6 +11,23 @@ export default {
       mapData,
     });
   },
+  start() {
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.START
+    });
+  },
+  togglePause(key) {
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.TOGGLE_PAUSE,
+      key,
+    });
+  },
+  gameOver(data) {
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.GAME_OVER,
+      data,
+    });
+  },
   playerMove(key) {
     AppDispatcher.handleViewAction({
       actionType: GameConstants.PLAYER_MOVE,

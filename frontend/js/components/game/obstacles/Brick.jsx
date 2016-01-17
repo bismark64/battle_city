@@ -22,7 +22,7 @@ export default class Brick extends Component {
     const { type, x, y, id } = this.props;
 
     return(
-      <div className={this.getClasses()} data-x={x} data-y={y} data-relative-id={id}></div>
+      <div className={this.getClasses()} style={{ top: y, left: x }} data-x={x} data-y={y} data-relative-id={id}></div>
     );
   }
 }

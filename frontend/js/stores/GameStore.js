@@ -10,9 +10,17 @@ import GameDataStore from '../utils/GameDataStore';
 const CHANGE_EVENT = 'change';
 const dataStore = new GameDataStore();
 
+
 const GameStore = Object.assign({}, EventEmitter.prototype, {
+  initialState() {
+    return dataStore.initialState();
+  },
+
   getState(){
     return {
+      playing: dataStore.isPlaying(),
+      score: dataStore.getScore(),
+      lives: dataStore.getLives(),
       player: dataStore.getPlayerState(),
       obstacles: dataStore.getObstacles(),
       bullets: dataStore.getBullets(),
@@ -30,13 +38,25 @@ const GameStore = Object.assign({}, EventEmitter.prototype, {
 
 });
 
-GameStore.dispatcherToken = AppDispatcher.register(payload => {
+AppDispatcher.register(payload => {
   const action = payload.action;
   let emitEvent = true;
 
   switch (action.actionType) {
     case GameConstants.LOAD_MAP:
       emitEvent = dataStore.storeObstacles(action.mapData);
+      break;
+
+    case GameConstants.START:
+      emitEvent = dataStore.startGame();
+      break;
+
+    case GameConstants.TOGGLE_PAUSE:
+      emitEvent = dataStore.togglePauseGame();
+      break;
+
+    case GameConstants.GAME_OVER:
+      emitEvent = dataStore.gameOver(action.timestamp);
       break;
 
     case GameConstants.PLAYER_MOVE:

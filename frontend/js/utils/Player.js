@@ -39,7 +39,7 @@ const calculateNewPosition = (currentPosition, key, speed) => {
 // Main class 
 export default class Player {
   constructor(options={}){
-    this.size = options.size || [50,50];
+    this.size = options.size || 50;
     this.speed = options.speed || 10;
     this.initialPosition = [200,600];
     this.position = Immutable.fromJS(this.initialPosition);
@@ -49,14 +49,9 @@ export default class Player {
       y: [KEY.controls.down, KEY.controls.up]
     };
 
-    let mapMax = 650 - this.size[0] + this.speed;
-    this.mapSize = options.mapSize || Range(0, mapMax);
+    this.mapSize = options.mapSize || Range(0, (650-this.size+this.speed));
 
-    this.obstacles = null;
-  }
-
-  storeObstacles(obstacles){
-    this.obstacles = obstacles;
+    this.obstacles = options.obstacles;
   }
 
   withinField(x,y){
@@ -65,17 +60,18 @@ export default class Player {
 
   // Detect collision with projected position and previously stored obstacles
   collision(x,y){
+    let obstacles = this.obstacles.getBricks();
     let c = false;
 
-    if(this.obstacles === null){
+    if(obstacles === null){
       alert('Error: Obstacles not loaded.');
       return true;
     }
 
     if (!this.withinField(x,y)) { return true };
 
-    _.forEach(this.obstacles, (obstacle) => {
-      let rect1 = {x: x, y: y, width: this.size[0], height: this.size[1]};
+    _.forEach(obstacles, (obstacle) => {
+      let rect1 = {x: x, y: y, width: this.size, height: this.size};
       let rect2 = {x: obstacle.x, y: obstacle.y, width: obstacle.size, height: obstacle.size };
 
       let collided = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
