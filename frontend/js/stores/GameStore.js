@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import GameConstants from '../constants/GameConstants';
+import StoreConstants from '../constants/StoreConstants';
 
 import GameDataStore from '../utils/GameDataStore';
 
@@ -19,12 +20,14 @@ const GameStore = Object.assign({}, EventEmitter.prototype, {
   getState(){
     return {
       playing: dataStore.isPlaying(),
+      over: dataStore.isOver(),
       score: dataStore.getScore(),
       lives: dataStore.getLives(),
       player: dataStore.getPlayerState(),
       obstacles: dataStore.getObstacles(),
       bullets: dataStore.getBullets(),
-      explosions: dataStore.getExplosions()
+      explosions: dataStore.getExplosions(),
+      tanks: dataStore.getTanks()
     };
   },
 
@@ -43,12 +46,8 @@ AppDispatcher.register(payload => {
   let emitEvent = true;
 
   switch (action.actionType) {
-    case GameConstants.LOAD_MAP:
-      emitEvent = dataStore.storeObstacles(action.mapData);
-      break;
-
     case GameConstants.START:
-      emitEvent = dataStore.startGame();
+      emitEvent = dataStore.startGame(action.map);
       break;
 
     case GameConstants.TOGGLE_PAUSE:
@@ -73,6 +72,14 @@ AppDispatcher.register(payload => {
 
     case GameConstants.EXPLOSION:
       emitEvent = dataStore.removeExplosion(action.explosion);
+      break;
+
+    case StoreConstants.STORE_TANK_PATH:
+      emitEvent = dataStore.storeTankPath(action.pathData);
+      break;
+
+    case GameConstants.TANK_MOVE:
+      emitEvent = dataStore.moveTank(action.tankId);
       break;
 
     default:

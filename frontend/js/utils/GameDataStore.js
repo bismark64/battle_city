@@ -2,40 +2,43 @@ import Immutable, {List, Range} from 'immutable';
 import _ from 'lodash';
 
 import Game from './Game';
+import Map from './Map';
 import Player from './Player';
-import Obstacle from './Obstacle';
 import Bullet from './Bullet';
 import Explosion from './Explosion';
+import Tank from './Tank';
 
 export default class GameDataStore{
   constructor(options={}){
-    this.game = new Game();
-    this.obs = new Obstacle();
+    this.game = new Game({dataStore: this});
+    this.map = new Map({dataStore: this});
+    this.player = new Player({dataStore: this});
+    this.bullet = new Bullet({dataStore: this});
+    this.tank = new Tank({dataStore: this});
     this.explosion = new Explosion();
-    this.player = new Player({
-      obstacles: this.obs
-    });
-    this.bullet = new Bullet({
-      explosion: this.explosion,
-      obstacles: this.obs
-    });
   }
 
   initialState(){
     return{
       playing: this.isPlaying(),
+      over: this.isOver(),
       score: this.getScore(),
-      level: 1,
+      level: this.getLevel(),
       lives: this.getLives(),
       player: this.getPlayerState(),
       obstacles: this.getObstacles(),
       bullets: this.getBullets(),
-      explosions: this.getExplosions()
+      explosions: this.getExplosions(),
+      tanks: this.getTanks()
     };
   }
 
   //Game
-  startGame(){
+  startGame(map){
+    this.storeObstacles(map.obstacles);
+    this.createTanks(map.tanks);
+    this.player.resetPosition(150,600);
+    this.player.resetOrientation('up');
     this.game.start();
     return true;
   }
@@ -45,13 +48,21 @@ export default class GameDataStore{
     return true;
   }
 
-  gameOver(data){
-    this.game.over(data);
+  gameOver(){
+    this.game.gameOver();
     return true;
+  }
+
+  updateScore(points){
+    this.game.updateScore(points);
   }
 
   isPlaying(){
     return this.game.isPlaying();
+  }
+
+  isOver(){
+    return this.game.isOver();
   }
 
   getScore(){
@@ -62,18 +73,30 @@ export default class GameDataStore{
     return this.game.getLives();
   }
 
-  // Obstacles
+  getLevel(){
+    return this.game.getLevel();
+  }
+
+  // Map
   storeObstacles(obstacles){
-    this.obs.save(obstacles);
+    this.map.saveObstacles(obstacles);
     return true
   }
 
   getObstacles(){
-    return this.obs.get();
+    return this.map.getObstacles();
   }
 
-  getObstacleBricks(){
-    return this.obs.getBricks();
+  getMapGraph(){
+    return this.map.getGridGraph();
+  }
+
+  getMapPath(from, to){
+    return this.map.getPath(from, to);
+  }
+
+  removeObstacles(obstacles){
+    this.map.removeObstacles(obstacles);
   }
 
   //Player
@@ -102,6 +125,10 @@ export default class GameDataStore{
   }
 
   //Explosion
+  createExplosion(bullet){
+    this.explosion.create(bullet);
+  }
+
   removeExplosion(explosionId){
     this.explosion.remove(explosionId);
     return true;
@@ -111,4 +138,26 @@ export default class GameDataStore{
     return this.explosion.get();
   }
 
+  // Tank
+  createTanks(tanks){
+    this.tank.create(tanks);
+  }
+
+  storeTankPath(pathData){
+    this.tank.storePath(pathData);
+    return true;
+  }
+
+  moveTank(tankId){
+    this.tank.move(tankId);
+    return true;
+  }
+
+  removeTank(tankId){
+    this.tank.destroy(tankId);
+  }
+
+  getTanks(){
+    return this.tank.get();
+  }
 }

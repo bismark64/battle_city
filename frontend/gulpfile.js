@@ -18,19 +18,11 @@ var isWatching = false;
 var paths = {
   scripts: ['js/components/**/*.jsx', 'js/**/*.js'],
   scss: 'assets/stylesheets/**/*.scss',
-  images: 'assets/images/**/*'
+  images: 'assets/images/**/*',
+  fonts : 'assets/fonts/*'
 };
 
 var settings = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
-
-/**
- * Livereload (or noop if not run by watch)
- */
-/*function livereload() {
-  return lazypipe()
-    .pipe(isWatching ? plugins.livereload : noop)()
-  ;
-}*/
 
 gulp.task('clean', function() {
   return del(['build']);
@@ -46,6 +38,10 @@ gulp.task('clean-images', function() {
 
 gulp.task('clean-css', function() {
   return del(['build/css']);
+});
+
+gulp.task('clean-fonts', function() {
+  return del(['build/fonts']);
 });
 
 gulp.task('scripts', ['clean-scripts'], function () {
@@ -78,7 +74,13 @@ gulp.task('sass', ['clean-css'], function () {
     .pipe(plugins.livereload());
 });
 
-gulp.task('index', ['clean', 'scripts', 'images', 'sass'], function(){
+gulp.task('fonts', ['clean-fonts'], function () {
+  gulp.src(paths.fonts)
+    .pipe(gulp.dest('build/fonts'))
+    .pipe(plugins.livereload());
+});
+
+gulp.task('index', ['clean', 'scripts', 'images', 'sass', 'fonts'], function(){
   var target = gulp.src('index.html');
   var sources = gulp.src(['build/app.js', 'build/css/**/*.css'], {read: false});
    

@@ -42,15 +42,11 @@ export default class Player extends BaseComponent {
   _onKeyDown(e){
     let key = e.which;
 
-    if(this._isEscapeKey(key)){
-      GameActions.togglePause(key);
+    if( (this._isEscapeKey(key) || this._isEnterKey(key)) && !this.props.gameOver ){
+      GameActions.togglePause();
     }
 
-    if(this._isEnterKey(key)){
-      GameActions.start();
-    }
-
-    if (this.props.playing) {
+    if (this.props.playing && !this.props.gameOver) {
 
       if (this._isShootKey(key)) {
         GameActions.shoot(this.props.data);
@@ -70,8 +66,10 @@ export default class Player extends BaseComponent {
   }
 
   render(){
+    const { playing, gameOver } = this.props;
     const { x, y, orientation } = this.props.data;
+    const show = (playing && !gameOver) ? '' : 'hidden';
 
-    return <div id="tank-player" className={`rotating ${orientation}`} style={{top: y, left: x}}></div>;
+    return <div id="player" className={`tank ${orientation} ${show}`} style={{top: y, left: x}}></div>;
   }
 }

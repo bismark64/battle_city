@@ -5,7 +5,6 @@ import GameActions from '../../actions/GameActions';
 export default class Bullet extends BaseComponent {
   constructor(props){
     super(props);
-
     this._bind('move');
   }
 
@@ -14,7 +13,7 @@ export default class Bullet extends BaseComponent {
   }
 
   componentDidMount(){
-    this.interval = setInterval(this.move, 5);
+    this.interval = setInterval(this.move, 50);
   }
 
   componentWillUnmount(){

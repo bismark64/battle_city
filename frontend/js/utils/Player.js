@@ -41,7 +41,7 @@ export default class Player {
   constructor(options={}){
     this.size = options.size || 50;
     this.speed = options.speed || 10;
-    this.initialPosition = [200,600];
+    this.initialPosition = [150,600];
     this.position = Immutable.fromJS(this.initialPosition);
     this.orientation = 'up';
     this.allowedControlKeys =  {
@@ -51,7 +51,7 @@ export default class Player {
 
     this.mapSize = options.mapSize || Range(0, (650-this.size+this.speed));
 
-    this.obstacles = options.obstacles;
+    this.dataStore = options.dataStore;
   }
 
   withinField(x,y){
@@ -60,8 +60,11 @@ export default class Player {
 
   // Detect collision with projected position and previously stored obstacles
   collision(x,y){
-    let obstacles = this.obstacles.getBricks();
     let c = false;
+    let obstacles = _.flatten([
+      this.dataStore.getObstacles(),
+      this.dataStore.getTanks()
+    ]);
 
     if(obstacles === null){
       alert('Error: Obstacles not loaded.');
@@ -111,10 +114,19 @@ export default class Player {
     this.orientation = getKeyName(key, 'controls');
   }
 
+  // Public Methods
   move(key){
     this.updatePosition(key);
     this.updateOrientation(key);
     return true
+  }
+
+  resetPosition(x,y){
+    this.position = Immutable.fromJS([x,y]);
+  }
+
+  resetOrientation(orientation){
+    this.orientation = orientation;
   }
 
   // Getters

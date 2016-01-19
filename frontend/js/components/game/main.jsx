@@ -13,13 +13,11 @@ export default class Main extends BaseComponent {
     super(props);
 
     this.state = GameStore.initialState();
-
     this._bind('_onChange');
   }
 
   componentDidMount(){
     GameStore.addChangeListener(this._onChange);
-    GameActions.loadMap(this.props.level);
   }
 
   _onChange(){
@@ -27,19 +25,21 @@ export default class Main extends BaseComponent {
   };
 
   render(){
-    const { playing, score, level, lives, player, obstacles, bullets, explosions } = this.state;
+    const { over, playing, score, level, lives, player, obstacles, bullets, explosions, tanks } = this.state;
 
     return(
       <Grid>
         <Row>
           <Col xs={9} md={9}>
             <Field
+              level={level}
+              over={over}
               playing={playing}
               player={player} 
-              bricks={obstacles.bricks} 
-              metals={obstacles.metals} 
+              obstacles={obstacles} 
               bullets={bullets} 
-              explosions={explosions} />
+              explosions={explosions}
+              tanks={tanks} />
           </Col>
           <Col xs={3} md={3}>
             <h1>Level {level}</h1>

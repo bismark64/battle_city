@@ -3,23 +3,17 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import AsyncLoader from '../utils/AsyncLoader';
 
 export default {
-  loadMap(mapUrl){
-    let mapData = AsyncLoader.loadMap(mapUrl);
+  start(level) {
+    let map = AsyncLoader.loadMap(level);
 
     AppDispatcher.handleViewAction({
-      actionType: GameConstants.LOAD_MAP,
-      mapData,
+      actionType: GameConstants.START,
+      map
     });
   },
-  start() {
+  togglePause() {
     AppDispatcher.handleViewAction({
-      actionType: GameConstants.START
-    });
-  },
-  togglePause(key) {
-    AppDispatcher.handleViewAction({
-      actionType: GameConstants.TOGGLE_PAUSE,
-      key,
+      actionType: GameConstants.TOGGLE_PAUSE
     });
   },
   gameOver(data) {
@@ -51,5 +45,12 @@ export default {
       actionType: GameConstants.EXPLOSION,
       explosion,
     });
+  },
+  moveTank(tankId){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.TANK_MOVE,
+      tankId,
+    });
   }
+
 };

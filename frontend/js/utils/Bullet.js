@@ -16,13 +16,15 @@ const OPERATORS = {
 export default class Bullet {
   constructor(options={}){
     this.bullets = [];
-    this.bulletSpeed = 2;
+    this.bulletSpeed = 20;
     this.bulletSize = 50;
+
+    this.dataStore = options.dataStore;
 
     this.explosion = options.explosion;
     this.obstacles = options.obstacles;
 
-    this.mapSize = options.mapSize || Range(0, (650-this.bulletSize));
+    this.mapSize = options.mapSize || Range(0, (650-this.bulletSize+this.bulletSpeed));
   }
 
   create(bullet){
@@ -47,9 +49,8 @@ export default class Bullet {
     if(_.isEmpty(collisionWith)){
       this.bullets.push(bullet); //Re-add modified object to collection
     }else{
-      console.log(collisionWith);
-      this.explosion.create(bullet);
-      if(collisionWith[0] != null) this.obstacles.removeBricks(collisionWith);
+      this.dataStore.createExplosion(bullet); //Create Explosion
+      if(collisionWith[0] != null) this.dataStore.removeObstacles(collisionWith); // Remove impacted obstacle
     }
 
     return true;
@@ -60,8 +61,11 @@ export default class Bullet {
   }
 
   collision(bullet){
-    let obstacles = this.obstacles.getBricks();
     let collisionWith = [];
+    let obstacles = _.flatten([
+      this.dataStore.getObstacles(),
+      this.dataStore.getTanks()
+    ]);
 
     if (!this.withinField(bullet.x, bullet.y)) { return [null] }; // Field Edges
 

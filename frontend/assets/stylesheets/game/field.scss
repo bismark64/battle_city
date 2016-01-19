@@ -6,20 +6,55 @@ $xBrickSize: 12.5px;
 $yBrickSize: 12.5px;
 $brickGlueSize: 2px;
 
-$random7: random(7);
-
-$brickPalette: (#a35143, #ca6553, #dd745f, #65342f, #d55846, #8f3733, #ae4740);
+$brickPalette: (#a35143, #ca6553, #dd745f, #65342f, #d55846, #8f3733, #ae4740, #903B35, #B43104);
+$random9: random(9);
 
 $bulletContainerSize: 50px;
 $bulletSize: 5px;
 
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff ttf) {
+  $src: null;
+  $extmods: (
+    eot: "?",
+    svg: "#" + str-replace($name, " ", "_")
+  );
+  $formats: (
+    otf: "opentype",
+    ttf: "truetype"
+  );
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($path + "." + $extmod)) format(quote($format)), comma);
+  }
+  @font-face {
+    font-family: quote($name);
+    font-style: $style;
+    font-weight: $weight;
+    src: $src;
+  }
+}
+
+@include font-face(BattleCity, "/fonts/battle-cities");
+
+@mixin brick_bg($y) {
+  background: nth($brickPalette, $random9);
+  @for $i from 1 through $y {
+    $j: $i - 1;
+
+    &:nth-child(#{random(99)%9}) { 
+      background: nth($brickPalette, random($i));
+    };
+  }
+}
+
 @-webkit-keyframes pulse_animation {
   0% { -webkit-transform: scale(1); }
   30% { -webkit-transform: scale(1); }
-  40% { -webkit-transform: scale(1.05); }
+  40% { -webkit-transform: scale(1.1); }
   50% { -webkit-transform: scale(1); }
   60% { -webkit-transform: scale(1); }
-  70% { -webkit-transform: scale(1.02); }
+  70% { -webkit-transform: scale(1.05); }
   80% { -webkit-transform: scale(1); }
   100% { -webkit-transform: scale(1); }
 }
@@ -30,44 +65,41 @@ $bulletSize: 5px;
   height: $yCols * $squareSize;
   background: black;
   margin: 20px auto;
+  #pause-overlay,
+  #gameover-overlay,
   #start-overlay{
     width: 650px;
     height: 650px;
+    background: rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 1;
     h3{
-      color: white;
+      font-family: 'BattleCity';
+      color: red;
+      display: block;
       padding-top: 50%;
       text-align: center;
-      text-shadow: 0px 0px 5px black;
+      text-shadow: 0px 0px 0px white;
       text-transform: uppercase;
     }
-    &.stopped{
-      background: rgba(255,255,255,0.2);
-      h3{
-        display: block;
-        -webkit-animation-name: 'pulse_animation';
-        -webkit-animation-duration: 5000ms;
-        -webkit-animation-iteration-count: infinite;
-        -webkit-animation-timing-function: linear;
-      }
-    }
-    &.playing{
-      background: none;
-      h3{
-        display: none;
-      }
+    a{
+      text-transform: uppercase;
+      -webkit-animation-name: 'pulse_animation';
+      -webkit-animation-duration: 5000ms;
+      -webkit-animation-iteration-count: infinite;
+      -webkit-animation-timing-function: linear;
     }
   }
-  #eagle{
+  .eagle{
     position: absolute;
     width: $squareSize;
     height: $squareSize;
     background: url('/img/eagle.png') no-repeat center;
   }
-  #tank-player{
+  .tank{
     position: absolute;
     width: $squareSize;
     height: $squareSize;
-    background: url('/img/player-tank.png') no-repeat center;
     background-size: contain;
 
     -webkit-transition: top 0.1s ease;
@@ -101,13 +133,25 @@ $bulletSize: 5px;
       -ms-transform: rotate(90deg);
       -moz-transform: rotate(90deg);
     }
+
+    // Tank Types
+    &#player{
+      background: url('/img/player-tank.png') no-repeat center;
+    }
+
+    &.regular{
+      background: yellow;
+    }
+    &.quick{
+      background: red;
+    }
   }
   .brick{
     position: absolute;
     width: $xBrickSize;
     height: $yBrickSize;
-    background: nth($brickPalette, $random7);
     border-bottom: 2px solid #ccc; 
+    @include brick_bg(8);
     &.brick2{
       border-left: 2px solid #ccc;
     }
@@ -154,3 +198,4 @@ $bulletSize: 5px;
     background-size: contain;
   }
 }
+

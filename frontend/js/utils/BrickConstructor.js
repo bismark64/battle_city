@@ -1,9 +1,17 @@
+const BRICKS_LENGTH = {
+  brick: 8,
+  metal: 2,
+  eagle: 1
+};
+
 export default class BrickConstructor {
   constructor(parent){
     this.parent = parent;
+    this.type = this.parent.type;
+    this.orientation = this.parent.orientation;
     this.regularBrickSize = 12.5;
     this.metalBrickSize = 25;
-    this.bricksLength = (this.parent.type == 'brick') ? 8 : 2;
+    this.bricksLength = BRICKS_LENGTH[this.type];
     this.fn = this.selectFunctionToApply();
   }
 
@@ -13,10 +21,10 @@ export default class BrickConstructor {
 
   selectFunctionToApply(){
     let fn;
-    if (this.parent.type == 'brick') {
-      fn = (this.parent.orientation == 'horizontal') ? this.buildRegularBrickHorizontal : this.buildRegularBrickVertical;
+    if (this.type == 'brick' || this.type == 'eagle') {
+      fn = (this.orientation == 'horizontal') ? this.buildRegularBrickHorizontal : this.buildRegularBrickVertical;
     } else{
-      fn = (this.parent.orientation == 'horizontal') ? this.buildMetalBrickHorizontal : this.buildMetalBrickVertical;
+      fn = (this.orientation == 'horizontal') ? this.buildMetalBrickHorizontal : this.buildMetalBrickVertical;
     };
     return fn;
   }
@@ -31,10 +39,10 @@ export default class BrickConstructor {
       x = parentX + (this.regularBrickSize*index);
       y = parentY;
     } else{
-      x = this.regularBrickSize*index;
+      x = parentX + this.regularBrickSize*(index-4);
       y = parentY + this.regularBrickSize;
     };
-    return {relativeId: index, x: x, y: y, size: this.regularBrickSize};
+    return {type: this.type, orientation: this.orientation, relativeId: index, x: x, y: y, size: this.regularBrickSize};
   }
 
   buildRegularBrickVertical(index){
@@ -49,7 +57,7 @@ export default class BrickConstructor {
       x = parentX + this.regularBrickSize;
       y = parentY + (this.regularBrickSize*((index-1)/2) );
     };
-    return {relativeId: index, x: x, y: y, size: this.regularBrickSize};
+    return {type: this.type, orientation: this.orientation, relativeId: index, x: x, y: y, size: this.regularBrickSize};
   }
 
   //Metal Bricks
@@ -62,7 +70,7 @@ export default class BrickConstructor {
       x = parentX + this.metalBrickSize;
       y = parentY;
     } 
-    return {relativeId: index, x: x, y: y, size: this.metalBrickSize};
+    return {type: this.type, orientation: this.orientation, relativeId: index, x: x, y: y, size: this.metalBrickSize};
   }
 
   buildMetalBrickVertical(index){
@@ -74,7 +82,7 @@ export default class BrickConstructor {
       x = parentX;
       y = parentY + this.metalBrickSize;
     } 
-    return {relativeId: index, x: x, y: y, size: this.metalBrickSize};
+    return {type: this.type, orientation: this.orientation, relativeId: index, x: x, y: y, size: this.metalBrickSize};
   }
 
   buildBricks(){
