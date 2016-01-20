@@ -1,10 +1,11 @@
 {
-  "name": "battle_city",
+  "name": "battle_city_frontend",
   "version": "1.0.0",
   "description": "Battle City React App",
   "author": "Emiliano Coppo",
   "license": "MIT",
   "main": "gulpfile.js",
+  "private": true,
   "dependencies": {
     "eventemitter3": "^1.1.1",
     "flux": "^2.1.1",
