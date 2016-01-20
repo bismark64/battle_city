@@ -30,7 +30,7 @@ router.route('/levels')
 router.route('/levels/:id')
 .get(function(req, res){
   Level
-  .findOne({_id: req.params.id})
+  .findOne({level: req.params.id})
   .populate('obstacles')
   .populate('tanks')
   .exec(function(error, level){

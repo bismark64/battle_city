@@ -22,6 +22,7 @@ export default class GameDataStore{
     return{
       playing: this.isPlaying(),
       over: this.isOver(),
+      win: this.hasWin(),
       score: this.getScore(),
       level: this.getLevel(),
       lives: this.getLives(),
@@ -35,16 +36,28 @@ export default class GameDataStore{
 
   //Game
   startGame(map){
-    this.storeObstacles(map.obstacles);
-    this.createTanks(map.tanks);
     this.player.resetPosition(150,600);
     this.player.resetOrientation('up');
-    this.game.start();
     return true;
+  }
+
+  mapLoaded(mapData){
+    const loaded = mapData != null;
+    if (loaded) {
+      this.storeObstacles(mapData.obstacles);
+      this.createTanks(mapData.tanks);
+      this.game.start();
+    }
+    return mapData;
   }
 
   togglePauseGame(){
     this.game.togglePause();
+    return true;
+  }
+
+  gameWin(){
+    this.game.gameWin();
     return true;
   }
 
@@ -63,6 +76,10 @@ export default class GameDataStore{
 
   isOver(){
     return this.game.isOver();
+  }
+
+  hasWin(){
+    return this.game.hasWin();
   }
 
   getScore(){
@@ -141,11 +158,6 @@ export default class GameDataStore{
   // Tank
   createTanks(tanks){
     this.tank.create(tanks);
-  }
-
-  storeTankPath(pathData){
-    this.tank.storePath(pathData);
-    return true;
   }
 
   moveTank(tankId){

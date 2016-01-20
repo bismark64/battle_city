@@ -22,7 +22,7 @@ export default class Tank extends BaseComponent {
   }
   
   render(){
-    const { x, y, type } = this.props;
+    const { x, y, type, index } = this.props;
 
     return <div className={`tank ${type}`} style={{top: y, left: x}}></div>;
   }

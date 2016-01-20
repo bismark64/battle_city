@@ -23,7 +23,7 @@ export default class Field extends BaseComponent {
   }
 
   render(){
-    const { level, over, playing, player, obstacles, bullets, explosions, tanks } = this.props;
+    const { level, over, win, score, playing, player, obstacles, bullets, explosions, tanks } = this.props;
     const anyObstacle = obstacles.length > 0;
 
     return(
@@ -45,6 +45,18 @@ export default class Field extends BaseComponent {
 
         <Overlay id="gameover-overlay" showIf={over}>
           <h3>Game Over</h3>
+          <p className="text-center">
+            <Button
+              className="btn btn-success btn-lg"
+              onClickEvent={this.startGame} >
+              Play Again
+            </Button>
+          </p>
+        </Overlay>
+
+        <Overlay id="gamewin-overlay" showIf={win}>
+          <h3>You Win!</h3>
+          <h4>Your Score: {score}</h4>
           <p className="text-center">
             <Button
               className="btn btn-success btn-lg"
@@ -77,7 +89,7 @@ export default class Field extends BaseComponent {
 
           {tanks.map((tank, index) => {
             return(
-              <Tank id={tank.id} x={tank.x} y={tank.y} type={tank.kind} key={index} />
+              <Tank id={tank._id} x={tank.x} y={tank.y} type={tank.kind} index={index} key={index} />
             );
           })}
 

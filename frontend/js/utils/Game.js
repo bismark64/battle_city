@@ -2,6 +2,7 @@ export default class Game {
   constructor(options={}){
     this.dataStore = options.dataStore;
     this.playing = false;
+    this.win = false;
     this.over = false;
     this.score = 0;
     this.level = options.level || 1;
@@ -24,6 +25,11 @@ export default class Game {
     this.over = true;
   }
 
+  gameWin(){
+    this.playing = false;
+    this.win = true;
+  }
+
   updateScore(points){
     this.score += points;
   }
@@ -35,6 +41,10 @@ export default class Game {
 
   isOver(){
     return this.over;
+  }
+
+  hasWin(){
+    return this.win;
   }
 
   getScore(){

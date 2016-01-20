@@ -21,6 +21,7 @@ const GameStore = Object.assign({}, EventEmitter.prototype, {
     return {
       playing: dataStore.isPlaying(),
       over: dataStore.isOver(),
+      win: dataStore.hasWin(),
       score: dataStore.getScore(),
       lives: dataStore.getLives(),
       player: dataStore.getPlayerState(),
@@ -50,12 +51,20 @@ AppDispatcher.register(payload => {
       emitEvent = dataStore.startGame(action.map);
       break;
 
+    case StoreConstants.LOADED_MAP:
+      emitEvent = dataStore.mapLoaded(action.mapData);
+      break;
+
     case GameConstants.TOGGLE_PAUSE:
       emitEvent = dataStore.togglePauseGame();
       break;
 
     case GameConstants.GAME_OVER:
       emitEvent = dataStore.gameOver(action.timestamp);
+      break;
+
+    case GameConstants.WIN:
+      emitEvent = dataStore.gameWin();
       break;
 
     case GameConstants.PLAYER_MOVE:
@@ -72,10 +81,6 @@ AppDispatcher.register(payload => {
 
     case GameConstants.EXPLOSION:
       emitEvent = dataStore.removeExplosion(action.explosion);
-      break;
-
-    case StoreConstants.STORE_TANK_PATH:
-      emitEvent = dataStore.storeTankPath(action.pathData);
       break;
 
     case GameConstants.TANK_MOVE:

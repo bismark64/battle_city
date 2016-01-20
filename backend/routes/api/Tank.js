@@ -3,33 +3,32 @@
 var express = require('express');
 var router = express.Router();
 
-var Obstacle = require('../../models/Obstacle');
+var Tank = require('../../models/Tank');
 var Level = require('../../models/Level');
 
-var pushObstacleToLevel = function(obstacle, callback){
-  Level.findOne({_id: obstacle.level}, function(error, level){
-    level.obstacles.push(obstacle);
+var pushTankToLevel = function(tank, callback){
+  Level.findOne({_id: tank.level}, function(error, level){
+    level.tanks.push(tank);
     level.save(callback);
   });
 };
 
-// Obstacles
-router.route('/obstacles')
+// Tanks
+router.route('/tanks')
 .get(function(req, res){
-  Obstacle
+  Tank
   .find({})
-  .populate('level')
   .exec(function(error, levels){
     res.json(levels);
   });
 })
 .post(function(req, res){
-  var obstacle = new Obstacle(req.body);
+  var tank = new Tank(req.body);
 
-  obstacle.save(function(error){
+  tank.save(function(error){
     if(error) res.sendStatus(500, {message: error});
 
-    pushObstacleToLevel(obstacle, function(error) {
+    pushTankToLevel(tank, function(error) {
       if(error) res.sendStatus(500, {message: error});
       res.sendStatus(200);
     });
@@ -37,23 +36,22 @@ router.route('/obstacles')
 
 });
 
-router.route('/obstacles/:id')
+router.route('/tanks/:id')
 .get(function(req, res){
-  Obstacle
+  Tank
   .findOne({_id: req.params.id})
-  .populate('level')
   .exec(function(error, level){
     res.json(level);
   });
 })
 .put(function(req, res){
-  Obstacle.update({_id: req.params.id}, req.body, function(error){
+  Tank.update({_id: req.params.id}, req.body, function(error){
     if(error) res.sendStatus(500, {message: error});
     res.sendStatus(200);
   });
 })
 .delete(function(req, res){
-  Obstacle.remove({_id: req.params.id}, function(error){
+  Tank.remove({_id: req.params.id}, function(error){
     if(error) res.sendStatus(500, {message: error});
     res.sendStatus(200);
   });

@@ -30,7 +30,6 @@ export default class Bullet {
   create(bullet){
     let index = this.bullets.length + 1;
     this.bullets.push({id: index, x: bullet.x, y: bullet.y, orientation: bullet.orientation});
-    return true;
   }
 
   move(bulletId){
@@ -52,8 +51,6 @@ export default class Bullet {
       this.dataStore.createExplosion(bullet); //Create Explosion
       if(collisionWith[0] != null) this.dataStore.removeObstacles(collisionWith); // Remove impacted obstacle
     }
-
-    return true;
   }
 
   withinField(x,y){

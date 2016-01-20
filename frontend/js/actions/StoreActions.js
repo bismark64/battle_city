@@ -2,10 +2,10 @@ import StoreConstants from '../constants/StoreConstants';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
 export default {
-  storeTankPath(pathData){
+  loadedMap(mapData){
     AppDispatcher.handleStoreAction({
-      actionType: StoreConstants.STORE_TANK_PATH,
-      pathData,
+      actionType: StoreConstants.LOADED_MAP,
+      mapData,
     });
   }
 }

@@ -30,7 +30,7 @@ var TankSchema = new Schema({
   orientation: {
     type: String,
     required: true,
-    default: 'horizontal'
+    default: 'down'
   },
   level: {
     type: Schema.Types.ObjectId,

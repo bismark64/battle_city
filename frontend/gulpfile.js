@@ -5,12 +5,11 @@ var fs = require('fs');
 
 var browserify = require('browserify');
 var babelify = require('babelify');
+
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
-
 var lazypipe = require('lazypipe');
 var del = require('del');
-
 var historyApiFallback = require('connect-history-api-fallback');
 
 var isWatching = false;

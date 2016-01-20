@@ -8,5 +8,6 @@ export default keyMirror({
   SHOOT: null,
   BULLET_UPDATE: null,
   EXPLOSION: null,
-  TANK_MOVE: null
+  TANK_MOVE: null,
+  WIN: null
 });

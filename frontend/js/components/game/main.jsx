@@ -25,7 +25,7 @@ export default class Main extends BaseComponent {
   };
 
   render(){
-    const { over, playing, score, level, lives, player, obstacles, bullets, explosions, tanks } = this.state;
+    const { over, win, playing, score, level, lives, player, obstacles, bullets, explosions, tanks } = this.state;
 
     return(
       <Grid>
@@ -34,6 +34,8 @@ export default class Main extends BaseComponent {
             <Field
               level={level}
               over={over}
+              win={win}
+              score={score}
               playing={playing}
               player={player} 
               obstacles={obstacles} 

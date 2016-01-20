@@ -15,13 +15,13 @@ var LevelSchema = new Schema({
   },
   obstacles: [{
     type: Schema.Types.ObjectId,
-    ref: 'Obstacle'
-    //required: true
+    ref: 'Obstacle',
+    required: true
   }],
   tanks: [{
     type: Schema.Types.ObjectId,
-    ref: 'Tank'
-    //required: true
+    ref: 'Tank',
+    required: true
   }]
 
 });

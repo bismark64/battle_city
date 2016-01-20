@@ -73,7 +73,7 @@ export default class Map {
     _.forEach(obstacles, obstacle => {
       // If Tank is impacted remove it
       if (obstacle.type == 'tank') {
-        this.dataStore.removeTank(obstacle.id);
+        this.dataStore.removeTank(obstacle._id);
       }
       // If Eagle is impacted stop the game
       if (obstacle.type == 'eagle') {

@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import StoreActions from '../actions/StoreActions';
-
 const SCORE_POINTS = {
   regular: 100,
   quick: 200,
@@ -13,11 +11,12 @@ export default class Tank {
     this.dataStore = options.dataStore;
     this.stopPoints = [{x: 300, y: 500}, {x: 100, y: 600}, {x: 500, y:600}];
     this.tanks = [];
+    this.tankQueue = [];
     this.stepSize = 50;
   }
 
   _find(id){
-    return _.find(this.tanks, tank => tank.id == id);
+    return _.find(this.tanks, tank => tank._id == id);
   }
 
   _getPath(tank){
@@ -30,9 +29,13 @@ export default class Tank {
   }
 
   create(tanks){
-    _.each(tanks, tankData => {
-      let id = this.tanks.length + 1;
-      let tank = _.merge(tankData, {id: id, size: 50, type: 'tank', orientation: 'down', path: this._getPath(tankData)});
+    // Get first 3 tanks
+    const startTanks = tanks.splice(0, 3); 
+    // Store the rest
+    this.tankQueue = tanks; 
+    // Display start tanks
+    _.each(startTanks, tankData => {
+      let tank = _.merge(tankData, {path: this._getPath(tankData)});
       this.tanks.push(tank);
     });
   }
@@ -54,7 +57,7 @@ export default class Tank {
   // Destroy Tank
   destroy(id){
     this.dataStore.updateScore(this._calculatePoints(id));
-    _.remove(this.tanks, tank => tank.id == id);
+    _.remove(this.tanks, tank => tank._id == id);
     if(_.isEmpty(this.tanks)) alert('You win!');
   }
 

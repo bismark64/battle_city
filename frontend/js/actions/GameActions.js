@@ -22,6 +22,11 @@ export default {
       data,
     });
   },
+  win(){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.WIN
+    });
+  },
   playerMove(key) {
     AppDispatcher.handleViewAction({
       actionType: GameConstants.PLAYER_MOVE,
