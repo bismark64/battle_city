@@ -9,5 +9,5 @@ export default keyMirror({
   BULLET_UPDATE: null,
   EXPLOSION: null,
   TANK_MOVE: null,
-  WIN: null
+  CREATE_TANK: null
 });

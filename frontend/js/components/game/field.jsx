@@ -15,11 +15,23 @@ import Overlay from '../page/Overlay';
 export default class Field extends BaseComponent {
   constructor(props){
     super(props);
-    this._bind('startGame');
+    this._bind('startGame', 'createNewTank');
+  }
+
+  createNewTank(){
+    if(this.props.playing) GameActions.createTank();
   }
 
   startGame(){
     GameActions.start(this.props.level);
+  }
+
+  componentDidMount(){
+    this.interval = setInterval(this.createNewTank, (1000*6));
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.interval);
   }
 
   render(){
@@ -28,7 +40,7 @@ export default class Field extends BaseComponent {
 
     return(
       <section id="game-canvas">
-        <Overlay id="start-overlay" showIf={!anyObstacle}>
+        <Overlay showIf={!anyObstacle}>
           <h3>Level {level}</h3>
           <p className="text-center">
             <Button
@@ -39,11 +51,11 @@ export default class Field extends BaseComponent {
           </p>
         </Overlay>
 
-        <Overlay id="pause-overlay" showIf={!playing && anyObstacle}>
+        <Overlay showIf={!playing && anyObstacle && !win}>
           <h3>Press Enter to Resume!</h3>
         </Overlay>
 
-        <Overlay id="gameover-overlay" showIf={over}>
+        <Overlay showIf={over}>
           <h3>Game Over</h3>
           <p className="text-center">
             <Button
@@ -54,7 +66,7 @@ export default class Field extends BaseComponent {
           </p>
         </Overlay>
 
-        <Overlay id="gamewin-overlay" showIf={win}>
+        <Overlay showIf={win}>
           <h3>You Win!</h3>
           <h4>Your Score: {score}</h4>
           <p className="text-center">
@@ -77,7 +89,7 @@ export default class Field extends BaseComponent {
 
           {bullets.map((bullet, index) => {
             return(
-              <Bullet id={bullet.id} x={bullet.x} y={bullet.y} orientation={bullet.orientation} key={index} />
+              <Bullet id={bullet.id} x={bullet.x} y={bullet.y} playing={playing} orientation={bullet.orientation} key={index} />
             );
           })}
 
@@ -89,7 +101,7 @@ export default class Field extends BaseComponent {
 
           {tanks.map((tank, index) => {
             return(
-              <Tank id={tank._id} x={tank.x} y={tank.y} type={tank.kind} index={index} key={index} />
+              <Tank id={tank.id} x={tank.x} y={tank.y} type={tank.kind} playing={playing} key={index} />
             );
           })}
 

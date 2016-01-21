@@ -42,7 +42,7 @@ $bulletSize: 5px;
   @for $i from 1 through $y {
     $j: $i - 1;
 
-    &:nth-child(#{random(99)%9}) { 
+    &:nth-child(#{random(999)}) { 
       background: nth($brickPalette, random($i));
     };
   }
@@ -65,12 +65,10 @@ $bulletSize: 5px;
   height: $yCols * $squareSize;
   background: black;
   margin: 20px auto;
-  #pause-overlay,
-  #gameover-overlay,
-  #start-overlay{
+  .overlay{
     width: 650px;
     height: 650px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     position: relative;
     z-index: 1;
     h3{
@@ -81,6 +79,10 @@ $bulletSize: 5px;
       text-align: center;
       text-shadow: 0px 0px 0px white;
       text-transform: uppercase;
+    }
+    h4{
+      color: white;
+      text-align: center;
     }
     a{
       text-transform: uppercase;
@@ -151,7 +153,7 @@ $bulletSize: 5px;
     width: $xBrickSize;
     height: $yBrickSize;
     border-bottom: 2px solid #ccc; 
-    @include brick_bg(8);
+    @include brick_bg(9);
     &.brick2{
       border-left: 2px solid #ccc;
     }

@@ -1,5 +1,7 @@
-import Immutable, {List, Range} from 'immutable';
+import { List } from 'immutable';
 import _ from 'lodash';
+
+import Collisionable from './Collisionable';
 
 const KEY = {
   controls:{
@@ -37,75 +39,48 @@ const calculateNewPosition = (currentPosition, key, speed) => {
 }
 
 // Main class 
-export default class Player {
+export default class Player extends Collisionable {
   constructor(options={}){
-    this.size = options.size || 50;
-    this.speed = options.speed || 10;
-    this.initialPosition = [150,600];
-    this.position = Immutable.fromJS(this.initialPosition);
+    super({size: 50, speed: 10});
+
+    this.game = options.game;
+
+    this.position = List.of(150, 600);
     this.orientation = 'up';
-    this.allowedControlKeys =  {
+    this.allowedAxisKeys =  {
       x: [KEY.controls.left, KEY.controls.right],
       y: [KEY.controls.down, KEY.controls.up]
     };
-
-    this.mapSize = options.mapSize || Range(0, (650-this.size+this.speed));
-
-    this.dataStore = options.dataStore;
   }
 
-  withinField(x,y){
-    return x >= this.mapSize.first() && x <= this.mapSize.last() && y >= this.mapSize.first() && y <= this.mapSize.last();
-  }
+  x(){ return this.position.first(); } 
+  y(){ return this.position.last(); } 
 
-  // Detect collision with projected position and previously stored obstacles
-  collision(x,y){
-    let c = false;
-    let obstacles = _.flatten([
-      this.dataStore.getObstacles(),
-      this.dataStore.getTanks()
+  _getObstacles(){
+    return _.flatten([
+      this.game.getObstacles(),
+      this.game.getTanks()
     ]);
-
-    if(obstacles === null){
-      alert('Error: Obstacles not loaded.');
-      return true;
-    }
-
-    if (!this.withinField(x,y)) { return true };
-
-    _.forEach(obstacles, (obstacle) => {
-      let rect1 = {x: x, y: y, width: this.size, height: this.size};
-      let rect2 = {x: obstacle.x, y: obstacle.y, width: obstacle.size, height: obstacle.size };
-
-      let collided = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
-
-      if(collided){
-        c = true;
-        return false;
-      }
-    });
-
-    return c;
   }
 
   // Validate key pressed
   shouldKeyUpdateAxis(key, axis=null){
-    let validKeys = (axis === null) ? _.values(this.allowedControlKeys) : this.allowedControlKeys[axis];
+    const validKeys = (axis === null) ? _.values(this.allowedAxisKeys) : this.allowedAxisKeys[axis];
     return _.includes(validKeys, key);
   }
 
   // Update Player position
   updatePosition(key){
-    let currentX = this.position.first();
-    let currentY = this.position.last();
+    const currentX = this.x();
+    const currentY = this.y();
 
-    let newX = calculateNewPosition(currentX, key, this.speed);
-    let newY = calculateNewPosition(currentY, key, this.speed);
+    const newX = calculateNewPosition(currentX, key, this.speed);
+    const newY = calculateNewPosition(currentY, key, this.speed);
 
-    if (this.shouldKeyUpdateAxis(key, 'x') && !this.collision(newX, currentY) ) {
+    if (this.shouldKeyUpdateAxis(key, 'x') && _.isEmpty(this.collision(this._getObstacles(), newX, currentY))) {
       this.position = this.position.update(0, () => newX );
     }
-    if (this.shouldKeyUpdateAxis(key, 'y') && !this.collision(currentX, newY) ) {
+    if (this.shouldKeyUpdateAxis(key, 'y') && _.isEmpty(this.collision(this._getObstacles(), currentX, newY))) {
       this.position = this.position.update(1, () => newY );
     }
   }
@@ -122,7 +97,7 @@ export default class Player {
   }
 
   resetPosition(x,y){
-    this.position = Immutable.fromJS([x,y]);
+    this.position = List.of(x,y);
   }
 
   resetOrientation(orientation){
@@ -132,8 +107,8 @@ export default class Player {
   // Getters
   get(){
     return {
-      x: this.position.first(),
-      y: this.position.last(),
+      x: this.x(),
+      y: this.y(),
       orientation: this.orientation
     };
   }

@@ -9,7 +9,7 @@ export default class Bullet extends BaseComponent {
   }
 
   move(){
-    GameActions.moveBullet(this.props.id);
+    if(this.props.playing) GameActions.moveBullet(this.props.id);
   }
 
   componentDidMount(){

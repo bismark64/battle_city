@@ -22,11 +22,6 @@ export default {
       data,
     });
   },
-  win(){
-    AppDispatcher.handleViewAction({
-      actionType: GameConstants.WIN
-    });
-  },
   playerMove(key) {
     AppDispatcher.handleViewAction({
       actionType: GameConstants.PLAYER_MOVE,
@@ -49,6 +44,11 @@ export default {
     AppDispatcher.handleViewAction({
       actionType: GameConstants.EXPLOSION,
       explosion,
+    });
+  },
+  createTank(){
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.CREATE_TANK
     });
   },
   moveTank(tankId){

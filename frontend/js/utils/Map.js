@@ -4,11 +4,12 @@ import BrickConstructor from './BrickConstructor';
 
 export default class Map {
   constructor(options={}){
-    this.dataStore =  options.dataStore;
+    this.game =  options.game;
     this.size = 650;
     this.gridSquareSize = 50;
     this.obstacles = [];
     this.graphData = {};
+    this.matrix = {};
   }
 
   _findObstacleInSquare(x,y, squareSize){
@@ -46,16 +47,6 @@ export default class Map {
     return new BrickConstructor(obstacle).buildBricks();
   }
 
-  _saveGraph(){
-    const matrix = this._generateMatrix({gridSize: this.size, squareSize: this.gridSquareSize});
-    const finder = new PF.AStarFinder();
-
-    this.graphData = {
-      finder: finder,
-      matrix: matrix
-    };
-  }
-
   // Seters
   saveObstacles(obstacles){
     let bricks = [];
@@ -64,8 +55,11 @@ export default class Map {
     });
     this.obstacles = _.flatten(bricks); // Save Obstacles
 
-    // Generate Grid Map
-    this._saveGraph();
+    // Generate Map Matrix
+    this.matrix = {
+      matrix: this._generateMatrix({gridSize: this.size, squareSize: this.gridSquareSize}),
+      squareSize: this.gridSquareSize
+    };
     return true;
   }
 
@@ -73,11 +67,11 @@ export default class Map {
     _.forEach(obstacles, obstacle => {
       // If Tank is impacted remove it
       if (obstacle.type == 'tank') {
-        this.dataStore.removeTank(obstacle._id);
+        this.game.removeTank(obstacle.id);
       }
       // If Eagle is impacted stop the game
       if (obstacle.type == 'eagle') {
-        this.dataStore.gameOver();
+        this.game.gameOver();
       }
       // If destroyable obstacle is impacted remove it
       if (obstacle.type == 'brick') {
@@ -91,8 +85,8 @@ export default class Map {
     return this.obstacles;
   }
 
-  getGridGraph(){
-    return this.graphData;
+  getMatrix(){
+    return this.matrix;
   }
 
   getPath(from, to){

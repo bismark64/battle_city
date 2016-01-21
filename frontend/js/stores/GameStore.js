@@ -6,30 +6,18 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import GameConstants from '../constants/GameConstants';
 import StoreConstants from '../constants/StoreConstants';
 
-import GameDataStore from '../utils/GameDataStore';
+import Game from '../utils/Game';
+const game = new Game();
 
 const CHANGE_EVENT = 'change';
-const dataStore = new GameDataStore();
-
 
 const GameStore = Object.assign({}, EventEmitter.prototype, {
   initialState() {
-    return dataStore.initialState();
+    return game.state();
   },
 
   getState(){
-    return {
-      playing: dataStore.isPlaying(),
-      over: dataStore.isOver(),
-      win: dataStore.hasWin(),
-      score: dataStore.getScore(),
-      lives: dataStore.getLives(),
-      player: dataStore.getPlayerState(),
-      obstacles: dataStore.getObstacles(),
-      bullets: dataStore.getBullets(),
-      explosions: dataStore.getExplosions(),
-      tanks: dataStore.getTanks()
-    };
+    return game.state();
   },
 
   addChangeListener(callback) {
@@ -48,43 +36,43 @@ AppDispatcher.register(payload => {
 
   switch (action.actionType) {
     case GameConstants.START:
-      emitEvent = dataStore.startGame(action.map);
+      emitEvent = game.startGame(action.map);
       break;
 
     case StoreConstants.LOADED_MAP:
-      emitEvent = dataStore.mapLoaded(action.mapData);
+      emitEvent = game.mapLoaded(action.mapData);
       break;
 
     case GameConstants.TOGGLE_PAUSE:
-      emitEvent = dataStore.togglePauseGame();
+      emitEvent = game.togglePauseGame();
       break;
 
     case GameConstants.GAME_OVER:
-      emitEvent = dataStore.gameOver(action.timestamp);
+      emitEvent = game.gameOver(action.timestamp);
       break;
 
-    case GameConstants.WIN:
-      emitEvent = dataStore.gameWin();
+    case GameConstants.CREATE_TANK:
+      emitEvent = game.addNewTank();
       break;
 
     case GameConstants.PLAYER_MOVE:
-      emitEvent = dataStore.playerMove(action.key);
+      emitEvent = game.playerMove(action.key);
       break;
 
     case GameConstants.SHOOT:
-      emitEvent = dataStore.createBullet(action.initialData);
+      emitEvent = game.createBullet(action.initialData);
       break;
 
     case GameConstants.BULLET_UPDATE:
-      emitEvent = dataStore.moveBullet(action.bulletId);
+      emitEvent = game.moveBullet(action.bulletId);
       break;
 
     case GameConstants.EXPLOSION:
-      emitEvent = dataStore.removeExplosion(action.explosion);
+      emitEvent = game.removeExplosion(action.explosion);
       break;
 
     case GameConstants.TANK_MOVE:
-      emitEvent = dataStore.moveTank(action.tankId);
+      emitEvent = game.moveTank(action.tankId);
       break;
 
     default:

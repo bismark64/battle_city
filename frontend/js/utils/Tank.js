@@ -1,4 +1,11 @@
 import _ from 'lodash';
+import PF from 'pathfinding';
+
+const STOP_POINTS = [
+  {x: 300, y: 500}, 
+  {x: 100, y: 600}, 
+  {x: 500, y:600}
+];
 
 const SCORE_POINTS = {
   regular: 100,
@@ -6,63 +13,103 @@ const SCORE_POINTS = {
   big: 400
 };
 
+let tanks = [];
+let tankQueue = [];
+
+const findTank = (id) => {
+  return _.find(tanks, tank => tank.id == id);
+};
+
+const removeTank = (id) => {
+  _.remove(tanks, tank => tank.id == id);
+}
+
+const pathFinder = new PF.AStarFinder();
+
 export default class Tank {
   constructor(options={}){
-    this.dataStore = options.dataStore;
-    this.stopPoints = [{x: 300, y: 500}, {x: 100, y: 600}, {x: 500, y:600}];
-    this.tanks = [];
-    this.tankQueue = [];
+    this.game = options.game;
+    this.path = null;
     this.stepSize = 50;
+    this.id = options.tankData._id;
+    this.kind = options.tankData.kind;
+    this.orientation = options.tankData.orientation;
+    this.size = options.tankData.size;
+    this.type = options.tankData.type;
+    this.x = options.tankData.x;
+    this.y = options.tankData.y;
   }
 
-  _find(id){
-    return _.find(this.tanks, tank => tank._id == id);
+  static setTankQueue(tanks){
+    tankQueue = tanks;
   }
 
-  _getPath(tank){
-    return _.drop(this.dataStore.getMapPath(tank, _.sample(this.stopPoints)));
-  }
-
-  _calculatePoints(id){
-    const tank = this._find(id);
-    return SCORE_POINTS[tank.kind];
-  }
-
-  create(tanks){
-    // Get first 3 tanks
-    const startTanks = tanks.splice(0, 3); 
-    // Store the rest
-    this.tankQueue = tanks; 
-    // Display start tanks
-    _.each(startTanks, tankData => {
-      let tank = _.merge(tankData, {path: this._getPath(tankData)});
-      this.tanks.push(tank);
-    });
-  }
-
-  // Tank Movement
-  move(tankId){
-    const tank = this._find(tankId);
-
-    if (tank.path.length > 0) { // If path move tank to next tile
-      const nextStep = tank.path.shift();
-
-      tank.x = nextStep[0]*this.stepSize;
-      tank.y = nextStep[1]*this.stepSize;
-    }else{ // If no path, generate a new path
-      tank.path = this._getPath(tank);
-    }
-  }
-
-  // Destroy Tank
-  destroy(id){
-    this.dataStore.updateScore(this._calculatePoints(id));
-    _.remove(this.tanks, tank => tank._id == id);
-    if(_.isEmpty(this.tanks)) alert('You win!');
+  static reset(){
+    tanks = [];
+    tankQueue = [];
   }
 
   // Getters
-  get(){
-    return this.tanks;
+  static getTanks(){
+    return tanks;
   }
+
+  static getTankQueue(){
+    return tankQueue;
+  }
+
+  // Tank Movement
+  static move(tankId){
+    const tank = findTank(tankId);
+    tank.move();
+  }
+
+  // Destroy Tank
+  static destroy(id){
+    const tank = findTank(id);
+    tank.destroy();
+    removeTank(id)
+  }
+
+  // Instance
+  _getPath(){
+    const matrix = this.game.getMapMatrix().matrix;
+    const matrixSquareSize = this.game.getMapMatrix().squareSize;
+
+    const endPoint = _.sample(STOP_POINTS);
+
+    const startX = Math.round(this.x/matrixSquareSize);
+    const startY = Math.round(this.y/matrixSquareSize);
+    const endX = Math.round(endPoint.x/matrixSquareSize);
+    const endY = Math.round(endPoint.y/matrixSquareSize);
+
+    const grid = new PF.Grid(matrix);
+
+    return _.drop(pathFinder.findPath(startX, startY, endX, endY, grid));
+  }
+
+  _calculateScore(){
+    return SCORE_POINTS[this.kind];
+  }
+
+  save(){
+    this.path = this._getPath();
+    tanks.push(this);
+  }
+
+  move(){
+    if (this.path.length > 0) { // If path move tank to next tile
+      const nextStep = this.path.shift();
+
+      this.x = nextStep[0]*this.stepSize;
+      this.y = nextStep[1]*this.stepSize;
+    }else{ // If no path, generate a new path
+      this.path = this._getPath();
+    }
+  }
+
+  destroy(){
+    this.game.updateScore(this._calculateScore());
+  }
+
 }

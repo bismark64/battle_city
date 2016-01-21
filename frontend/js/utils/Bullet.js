@@ -1,6 +1,8 @@
 import Immutable, {List, Range} from 'immutable';
 import _ from 'lodash';
 
+import Collisionable from './Collisionable';
+
 const ORIENTATION_MAPPER = {
   left: ['x', '-'],
   right: ['x', '+'],
@@ -13,74 +15,69 @@ const OPERATORS = {
   '-': function(a, b){ return a - b }
 };
 
-export default class Bullet {
+let bullets = [];
+
+const findBullet = (id) => {
+  return _.find(bullets, (bullet) => bullet.id == id);
+}
+
+const removeBullet = (id) => {
+  _.remove(bullets, bullet => bullet.id == id);
+}
+
+export default class Bullet extends Collisionable {
   constructor(options={}){
-    this.bullets = [];
-    this.bulletSpeed = 20;
-    this.bulletSize = 50;
-
-    this.dataStore = options.dataStore;
-
-    this.explosion = options.explosion;
-    this.obstacles = options.obstacles;
-
-    this.mapSize = options.mapSize || Range(0, (650-this.bulletSize+this.bulletSpeed));
+    super({size: 50, speed: 20});
+    this.id = bullets.length + 1;
+    this.x = options.data.x;
+    this.y = options.data.y; 
+    this.orientation = options.data.orientation;
+    this.game = options.game;
   }
 
-  create(bullet){
-    let index = this.bullets.length + 1;
-    this.bullets.push({id: index, x: bullet.x, y: bullet.y, orientation: bullet.orientation});
+  static get(){
+    return bullets;
   }
 
-  move(bulletId){
-    const bullet = _.find(this.bullets, (bullet) => bullet.id == bulletId);
+  static move(id){
+    const bullet = findBullet(id);
+    bullet.move();
+  }
 
-    _.remove(this.bullets, bullet => bullet.id == bulletId); //Remove old bullet from collection
-
-    const axis = ORIENTATION_MAPPER[bullet.orientation][0];
-    const operator = ORIENTATION_MAPPER[bullet.orientation][1];
-    const value = OPERATORS[operator](bullet[axis], this.bulletSpeed);
+  // Instance
+  _updatePosition(){
+    const axis = ORIENTATION_MAPPER[this.orientation][0];
+    const operator = ORIENTATION_MAPPER[this.orientation][1];
+    const value = OPERATORS[operator](this[axis], this.speed);
     
-    bullet[axis] = value;
+    this[axis] = value;
 
-    const collisionWith = this.collision(bullet);
+    return this;
+  }
+
+  _getObstacles(){
+    return _.flatten([
+      this.game.getObstacles(),
+      this.game.getTanks()
+    ]);
+  }
+
+  save(){
+    bullets.push(this);
+  }
+
+  move(){
+    const bullet = this._updatePosition();
+    removeBullet(this.id);
+
+    const collisionWith = this.collision(this._getObstacles(), bullet.x, bullet.y);
 
     if(_.isEmpty(collisionWith)){
-      this.bullets.push(bullet); //Re-add modified object to collection
+      bullets.push(bullet); //Re-add modified object to collection
     }else{
-      this.dataStore.createExplosion(bullet); //Create Explosion
-      if(collisionWith[0] != null) this.dataStore.removeObstacles(collisionWith); // Remove impacted obstacle
+      this.game.createExplosion(bullet); //Create Explosion
+      if(collisionWith[0] != null) this.game.removeObstacles(collisionWith); // Remove impacted obstacle
     }
-  }
-
-  withinField(x,y){
-    return x >= this.mapSize.first() && x <= this.mapSize.last() && y >= this.mapSize.first() && y <= this.mapSize.last();
-  }
-
-  collision(bullet){
-    let collisionWith = [];
-    let obstacles = _.flatten([
-      this.dataStore.getObstacles(),
-      this.dataStore.getTanks()
-    ]);
-
-    if (!this.withinField(bullet.x, bullet.y)) { return [null] }; // Field Edges
-
-    _.forEach(obstacles, (obstacle) => {
-      let rect1 = {x: bullet.x, y: bullet.y, width: this.bulletSize, height: this.bulletSize};
-      let rect2 = {x: obstacle.x, y: obstacle.y, width: obstacle.size, height: obstacle.size };
-
-      let collided = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
-
-      if(collided) collisionWith.push(obstacle);
-    });
-
-    return collisionWith;
-  }
-
-  // Getters
-  get(){
-    return this.bullets;
   }
 
 }

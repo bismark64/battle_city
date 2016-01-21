@@ -10,7 +10,7 @@ export default class Tank extends BaseComponent {
   }
 
   move(){
-    GameActions.moveTank(this.props.id);
+    if(this.props.playing) GameActions.moveTank(this.props.id);
   }
 
   componentDidMount(){
@@ -22,7 +22,7 @@ export default class Tank extends BaseComponent {
   }
   
   render(){
-    const { x, y, type, index } = this.props;
+    const { x, y, type } = this.props;
 
     return <div className={`tank ${type}`} style={{top: y, left: x}}></div>;
   }
