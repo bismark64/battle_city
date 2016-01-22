@@ -103,18 +103,6 @@ $bulletSize: 5px;
     width: $squareSize;
     height: $squareSize;
     background-size: contain;
-
-    -webkit-transition: top 0.1s ease;
-    -moz-transition: top 0.1s ease;
-    -ms-transition: top 0.1s ease;
-    -o-transition: top 0.1s ease;
-    transition: top 0.1s ease;
-
-    -webkit-transition: left 0.1s ease;
-    -moz-transition: left 0.1s ease;
-    -ms-transition: left 0.1s ease;
-    -o-transition: left 0.1s ease;
-    transition: left 0.1s ease;
     &.up{
       -webkit-transform: rotate(0deg);
       -ms-transform: rotate(0deg);
@@ -140,12 +128,13 @@ $bulletSize: 5px;
     &#player{
       background: url('/img/player-tank.png') no-repeat center;
     }
-
     &.regular{
-      background: yellow;
+      background: url('/img/normal-bot-up-s1.png') no-repeat center;
+      background-size: contain;
     }
     &.quick{
-      background: red;
+      background: url('/img/fast-bot-up-s1.png') no-repeat center;
+      background-size: contain;
     }
   }
   .brick{
