@@ -65,18 +65,22 @@ export default class Map {
 
   removeObstacles(obstacles){
     _.forEach(obstacles, obstacle => {
-      // If Tank is impacted remove it
-      if (obstacle.type == 'tank') {
-        this.game.removeTank(obstacle.id);
+
+      switch (obstacle.type) {
+        case 'tank':
+          this.game.removeTank(obstacle.id);
+          break;
+        case 'player':
+          this.game.hitPlayer();
+          break;
+        case 'eagle':
+          this.game.gameOver();
+          break;
+        case 'brick':
+          _.remove(this.obstacles, b => b.x == obstacle.x && b.y == obstacle.y && b.size == obstacle.size);
+          break;
       }
-      // If Eagle is impacted stop the game
-      if (obstacle.type == 'eagle') {
-        this.game.gameOver();
-      }
-      // If destroyable obstacle is impacted remove it
-      if (obstacle.type == 'brick') {
-        _.remove(this.obstacles, b => b.x == obstacle.x && b.y == obstacle.y && b.size == obstacle.size);
-      }
+
     });
   }
 

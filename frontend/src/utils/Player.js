@@ -46,6 +46,7 @@ export default class Player extends Collisionable {
       speed: 10
     });
     this.game = options.game;
+    this.type = 'player';
     this.x = 150;
     this.y = 600;
     this.velX = 0;
@@ -125,21 +126,25 @@ export default class Player extends Collisionable {
     this._updatePosition();
   }
 
+  hit(){
+    this.reset();
+    this.game.decreasePlayerLives();
+  }
+
   // Reseters
-  resetPosition(x,y){
+  reset(x=150,y=600,orientation='up'){
     this.x = x;
     this.y = y;
-  }
-
-  resetOrientation(orientation){
     this.orientation = orientation;
   }
-
+  
   // Getters
   get(){
     return {
       x: this.x,
       y: this.y,
+      size: this.size,
+      type: this.type,
       orientation: this.orientation
     };
   }

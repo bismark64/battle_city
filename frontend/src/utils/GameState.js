@@ -45,4 +45,9 @@ export default class GameState {
     this.score += points;
   }
 
+  decreaseLives(){
+    this.lives--;
+    if (this.lives == 0) this.gameOver();
+  }
+
 }

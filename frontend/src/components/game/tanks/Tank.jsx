@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import BaseComponent from '../../BaseComponent';
 import GameActions from '../../../actions/GameActions';
@@ -6,19 +7,32 @@ import GameActions from '../../../actions/GameActions';
 export default class Tank extends BaseComponent {
   constructor(props){
     super(props);
-    this._bind('move');
+    this._bind('move', 'shoot');
   }
 
   move(){
-    if(this.props.playing) GameActions.moveTank(this.props.id);
+    if(this.isActive()) GameActions.moveTank(this.props.id);
+  }
+
+  shoot(){
+    if(this.isActive()){
+      const data = _.merge(this.props, {shooter: 'tank'});
+      GameActions.shoot(data);
+    }
   }
 
   componentDidMount(){
-    this.interval = setInterval(this.move, 500);
+    this.movingInterval = setInterval(this.move, 150);
+    this.shootingInterval = setInterval(this.shoot, 2000);
   }
 
   componentWillUnmount(){
-    clearInterval(this.interval);
+    clearInterval(this.movingInterval);
+    clearInterval(this.shootingInterval);
+  }
+
+  isActive(){
+    return this.props.playing && !this.props.gameOver;
   }
   
   render(){

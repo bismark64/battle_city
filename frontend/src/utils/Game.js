@@ -13,9 +13,6 @@ export default class Game {
     this.gameState = new GameState();
     this.map = new Map({game: this});
     this.player = new Player({game: this});
-    //this.bullet = new Bullet({game: this});
-    //this.tank = new Tank({game: this});
-    //this.explosion = new Explosion();
   }
 
   state(){
@@ -30,8 +27,7 @@ export default class Game {
 
   //Game
   startGame(map){
-    this.player.resetPosition(150,600);
-    this.player.resetOrientation('up');
+    this.player.reset();
     return true;
   }
 
@@ -63,6 +59,10 @@ export default class Game {
 
   updateScore(points){
     this.gameState.updateScore(points);
+  }
+
+  decreasePlayerLives(){
+    this.gameState.decreaseLives();
   }
 
   // Map
@@ -98,6 +98,10 @@ export default class Game {
     return this.player.get();
   }
 
+  hitPlayer(){
+    this.player.hit();
+  }
+
   //Bullet
   createBullet(bulletData){
     new Bullet({game: this, data: bulletData}).save();
@@ -130,7 +134,7 @@ export default class Game {
   // Tank
   createTanks(tanks){
     // Get first 3 tanks
-    const startTanks = tanks.splice(0, 3); 
+    const startTanks = tanks.splice(0, 1);
     // Store the rest
     Tank.setTankQueue(tanks);
     // Display start tanks
@@ -140,12 +144,12 @@ export default class Game {
   }
 
   addNewTank(){
-    const tankQueue = Tank.getTankQueue();
+    // const tankQueue = Tank.getTankQueue();
 
-    if (!_.isEmpty(tankQueue)) {
-      const newTank = tankQueue.shift();
-      new Tank({game: this, tankData: newTank}).save();
-    }
+    // if (!_.isEmpty(tankQueue)) {
+    //   const newTank = tankQueue.shift();
+    //   new Tank({game: this, tankData: newTank}).save();
+    // }
     return true;
   }
 

@@ -30,7 +30,8 @@ export default class Bullet extends Collisionable {
     super({size: 50, speed: 20});
     this.id = bullets.length + 1;
     this.x = options.data.x;
-    this.y = options.data.y; 
+    this.y = options.data.y;
+    this.shooter = options.data.shooter;
     this.orientation = options.data.orientation;
     this.game = options.game;
   }
@@ -56,9 +57,11 @@ export default class Bullet extends Collisionable {
   }
 
   _getObstacles(){
+    const tanks = this.shooter == 'player' ? this.game.getTanks() : [this.game.getPlayerState()];
+
     return _.flatten([
       this.game.getObstacles(),
-      this.game.getTanks()
+      tanks
     ]);
   }
 

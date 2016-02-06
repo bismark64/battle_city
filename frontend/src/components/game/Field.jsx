@@ -101,7 +101,7 @@ export default class Field extends BaseComponent {
 
           {tanks.map((tank, index) => {
             return(
-              <Tank id={tank.id} x={tank.x} y={tank.y} type={tank.kind} orientation={tank.orientation} playing={playing} key={index} />
+              <Tank id={tank.id} x={tank.x} y={tank.y} type={tank.kind} orientation={tank.orientation} playing={playing} gameOver={over} key={index} />
             );
           })}
 
