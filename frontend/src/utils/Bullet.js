@@ -1,4 +1,4 @@
-import Immutable, {List, Range} from 'immutable';
+import {List} from 'immutable';
 import _ from 'lodash';
 
 import Collisionable from './Collisionable';
@@ -70,17 +70,19 @@ export default class Bullet extends Collisionable {
   }
 
   move(){
-    const bullet = this._updatePosition();
-    removeBullet(this.id);
+    const movedBullet = this._updatePosition();
+    const obstacles = this._getObstacles();
+    const collisionWith = this.collision(obstacles, movedBullet.x, movedBullet.y);
 
-    const collisionWith = this.collision(this._getObstacles(), bullet.x, bullet.y);
-
-    if(_.isEmpty(collisionWith)){
-      bullets.push(bullet); //Re-add modified object to collection
-    }else{
-      this.game.createExplosion(bullet); //Create Explosion
+    if (collisionWith.length > 0) {
+      this.destroy();
       if(collisionWith[0] != null) this.game.removeObstacles(collisionWith); // Remove impacted obstacle
-    }
+    };
+  }
+
+  destroy(){
+    removeBullet(this.id);
+    this.game.createExplosion(this); //Create Explosion
   }
 
 }

@@ -109,7 +109,7 @@ export default class Tank extends Collisionable {
         this.y = nextY;
         this.orientation = nextStep.orientation;
       }else{
-        this.path.unshift(nextStep);
+        this.path.unshift(nextStep); //re-add step to path
       }
     }else{ // If no path, generate a new path
       this.path = this.dynamics.getPath();

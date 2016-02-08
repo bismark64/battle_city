@@ -30,9 +30,9 @@ const GameStore = Object.assign({}, EventEmitter.prototype, {
 
 });
 
-AppDispatcher.register(payload => {
+AppDispatcher.register(GameStore, payload => {
   const action = payload.action;
-  let emitEvent = true;
+  let emitEvent = false;
 
   switch (action.actionType) {
     case GameConstants.START:

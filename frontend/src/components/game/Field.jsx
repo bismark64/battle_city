@@ -27,7 +27,7 @@ export default class Field extends BaseComponent {
   }
 
   componentDidMount(){
-    this.interval = setInterval(this.createNewTank, (1000*6));
+    this.interval = setInterval(this.createNewTank, (1000*20));
   }
 
   componentWillUnmount(){

@@ -1,5 +1,6 @@
 export default class GameState {
   constructor(options={}){
+    this.game = options.game;
     this.playing = false;
     this.win = false;
     this.over = false;
@@ -47,7 +48,7 @@ export default class GameState {
 
   decreaseLives(){
     this.lives--;
-    if (this.lives == 0) this.gameOver();
+    if (this.lives == 0) this.game.gameOver();
   }
 
 }

@@ -10,7 +10,7 @@ import Tank from './Tank';
 
 export default class Game {
   constructor(options={}){
-    this.gameState = new GameState();
+    this.gameState = new GameState({game: this});
     this.map = new Map({game: this});
     this.player = new Player({game: this});
   }
@@ -104,7 +104,7 @@ export default class Game {
 
   //Bullet
   createBullet(bulletData){
-    new Bullet({game: this, data: bulletData}).save();
+    if(this.getBullets().length <= 3) new Bullet({game: this, data: bulletData}).save();
     return true;
   }
 
@@ -134,7 +134,8 @@ export default class Game {
   // Tank
   createTanks(tanks){
     // Get first 3 tanks
-    const startTanks = tanks.splice(0, 1);
+    const startTanks = tanks.splice(0, 3);
+    //const startTanks = [];
     // Store the rest
     Tank.setTankQueue(tanks);
     // Display start tanks
@@ -144,12 +145,12 @@ export default class Game {
   }
 
   addNewTank(){
-    // const tankQueue = Tank.getTankQueue();
+    const tankQueue = Tank.getTankQueue();
 
-    // if (!_.isEmpty(tankQueue)) {
-    //   const newTank = tankQueue.shift();
-    //   new Tank({game: this, tankData: newTank}).save();
-    // }
+    if (!_.isEmpty(tankQueue)) {
+      const newTank = tankQueue.shift();
+      new Tank({game: this, tankData: newTank}).save();
+    }
     return true;
   }
 

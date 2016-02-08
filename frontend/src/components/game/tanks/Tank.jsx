@@ -22,8 +22,10 @@ export default class Tank extends BaseComponent {
   }
 
   componentDidMount(){
-    this.movingInterval = setInterval(this.move, 150);
-    this.shootingInterval = setInterval(this.shoot, 2000);
+    const shootTimer = Math.floor(Math.random() * 10000) + 1000;
+
+    this.movingInterval = setInterval(this.move, 200);
+    this.shootingInterval = setInterval(this.shoot, shootTimer);
   }
 
   componentWillUnmount(){

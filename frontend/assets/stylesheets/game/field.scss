@@ -131,6 +131,7 @@ $bulletSize: 5px;
     &.regular{
       background: url('/img/normal-bot-up-s1.png') no-repeat center;
       background-size: contain;
+      transition: all .1s ease 0s;
     }
     &.quick{
       background: url('/img/fast-bot-up-s1.png') no-repeat center;
@@ -165,6 +166,7 @@ $bulletSize: 5px;
       float: left;
       width: $bulletSize;
       height: $bulletSize;
+      transition: all 1s ease 0s;
       &.up{
         margin-left: ($bulletContainerSize/2) - ($bulletSize/2);
       }
